@@ -1,20 +1,20 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-interface UserInterface extends Document {
+export interface UserInterface extends Document {
     name: string;
     email: string;
     password: string;
     mobile: string;
-    pic?: string;
-    otp?: number | null;
+    image?: string;
+    otp?: number | undefined;
     friendRequests: mongoose.Types.ObjectId[];
     followers: mongoose.Types.ObjectId[];
     following: mongoose.Types.ObjectId[];
     sentFriendRequests: mongoose.Types.ObjectId[];
     uploadedMovies: {
     count: number;
-    links: string[];
+    movie_links: string[];
     is_online: boolean;
   };
   }
@@ -38,9 +38,9 @@ const userModelSchema: Schema = new Schema({
     required: true,
     unique: true
   },
-  pic: {
+  image: {
     type: String,
-    default: 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg'
+    // default: 'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg'
   },
   otp:{
     type: Number,
@@ -72,7 +72,7 @@ const userModelSchema: Schema = new Schema({
   ],
   uploadedMovies: {
     count: Number,
-    links: [String]
+    movie_links: [String]
   },
   is_online: {
     type: Boolean,
@@ -82,6 +82,7 @@ const userModelSchema: Schema = new Schema({
   timestamps: true
 });
 
+// encrypting the password
 userModelSchema.pre<UserInterface>('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
