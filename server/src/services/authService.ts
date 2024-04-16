@@ -94,4 +94,37 @@ const registerToDatabase = async (name: string, email: string, password: string,
     }
 }
 
-export { findUserByEmailAndPassword, generateToken, registerToDatabase };
+// function for finding if the user is already registered
+const isAlreadyRegistered = async ( email: string ): Promise<object | null> => {
+    try {
+        // logic for finding the user by email and password
+        const user = await User.findOne({
+            email,
+        });
+
+        // if user is not found
+        if (!user) {
+            // no user is found
+            return { message: "User not found" };
+        }
+
+        return user.toObject(); 
+    } catch (error) {
+        console.error(`Error finding the User! : ${error}`);
+        throw new Error("Error finding the User in the Database!");
+    }
+}
+
+// checking if the user is verified or not
+// Function to check if the user is verified or not
+const isVerified = async (userID: string): Promise<boolean | undefined> => {
+    try {
+        const user = await User.findById(userID);
+        return user ? user.verified : false;
+    } catch (error) {
+        console.error('Error checking user verification status:', error);
+        return false;
+    }
+};
+
+export { findUserByEmailAndPassword, generateToken, registerToDatabase, isAlreadyRegistered, isVerified };

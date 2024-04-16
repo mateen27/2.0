@@ -8,6 +8,7 @@ export interface UserInterface extends Document {
     mobile: string;
     image?: string;
     otp?: number | undefined;
+    verified?: boolean;
     friendRequests: mongoose.Types.ObjectId[];
     followers: mongoose.Types.ObjectId[];
     following: mongoose.Types.ObjectId[];
@@ -46,6 +47,10 @@ const userModelSchema: Schema = new Schema({
     type: Number,
     default: null
   },
+  verified: {
+    type: Boolean,
+    default: false
+  },
   friendRequests: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -83,15 +88,15 @@ const userModelSchema: Schema = new Schema({
 });
 
 // encrypting the password
-userModelSchema.pre<UserInterface>('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(this.password, salt);
-  this.password = hashedPassword;
-  next();
-});
+// userModelSchema.pre<UserInterface>('save', async function (next) {
+//   if (!this.isModified('password')) {
+//     return next();
+//   }
+//   const salt = await bcrypt.genSalt(10);
+//   const hashedPassword = await bcrypt.hash(this.password, salt);
+//   this.password = hashedPassword;
+//   next();
+// });
 
 const User = mongoose.model<UserInterface>('User', userModelSchema);
 

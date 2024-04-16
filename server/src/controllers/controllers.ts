@@ -1,6 +1,6 @@
 import { Request , Response } from "express"
 import User from "../models/userModel";
-import { findUserByEmailAndPassword, generateToken, registerToDatabase } from "../services/authService";
+import { findUserByEmailAndPassword, generateToken, isAlreadyRegistered, registerToDatabase } from "../services/authService";
 
 // logic for signing the user inside of the application
 const loginUserHandler = async ( req: Request , res: Response ) => {
@@ -66,16 +66,29 @@ const loginUserHandler = async ( req: Request , res: Response ) => {
 const registerUserHandler = async ( req: Request , res: Response ) => {
     try {
         // try accessing the details of the user
-        const { name, email, password, mobile, image } = req.body;
+        const { email } = req.body;
 
         // Calling a function in the service to handle database operations!
-        const user = await registerToDatabase(name, email, password, mobile, image);
+        const user = await isAlreadyRegistered(email);
 
-        res.status(201).json({ user });
+        res.status(200).json({ user });
     } catch (error) {
         console.error("Error Registering the user!", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
 
-export { loginUserHandler, registerUserHandler };
+// logic for sending the user has been verified into the database
+
+// Endpoint for handling verified user
+const verifiedUser = async (req: Request, res: Response) => {
+    try {
+        // Here you can respond with a success message or any additional logic
+        res.status(200).json({ message: 'User verified successfully' });
+    } catch (error) {
+        console.error('Error verifying user:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
+export { loginUserHandler, registerUserHandler, verifiedUser };
