@@ -1,6 +1,6 @@
 import { Request , Response } from "express"
 import User from "../models/userModel";
-import { findUserByEmailAndPassword, generateToken, isAlreadyRegistered, registerToDatabase } from "../services/authService";
+import { findUserByEmailAndPassword, generateToken, isAlreadyRegistered, listAllUsersExceptLoggedIn, registerToDatabase } from "../services/authService";
 
 // logic for signing the user inside of the application
 const loginUserHandler = async ( req: Request , res: Response ) => {
@@ -79,11 +79,9 @@ const registerUserHandler = async ( req: Request , res: Response ) => {
 }
 
 // logic for sending the user has been verified into the database
-
 // Endpoint for handling verified user
 const verifiedUser = async (req: Request, res: Response) => {
     try {
-        // Here you can respond with a success message or any additional logic
         res.status(200).json({ message: 'User verified successfully' });
     } catch (error) {
         console.error('Error verifying user:', error);
@@ -91,4 +89,19 @@ const verifiedUser = async (req: Request, res: Response) => {
     }
 };
 
-export { loginUserHandler, registerUserHandler, verifiedUser };
+const fetchAllUsersHandler = async (req: Request, res: Response) => {
+    try {
+        // accessing the logged in user's profile
+        const loggedInUser = req.params.userID;
+
+        // Making the query in the database where _id does not include the loggedInUserId
+        const users = await listAllUsersExceptLoggedIn(loggedInUser);
+
+        res.status(200).json( {users} );
+    } catch (error) {
+        console.log('Error fetching the users:' , error);
+        res.status(500).json({ message: 'Error fetching all the users!' });
+    }
+};
+
+export { loginUserHandler, registerUserHandler, verifiedUser, fetchAllUsersHandler };

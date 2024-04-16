@@ -127,4 +127,16 @@ const isVerified = async (userID: string): Promise<boolean | undefined> => {
     }
 };
 
-export { findUserByEmailAndPassword, generateToken, registerToDatabase, isAlreadyRegistered, isVerified };
+// function for listing all the users from the database except the one that is logged in & not in friend Request's List!
+const listAllUsersExceptLoggedIn = async (userID: string): Promise<object | undefined> => {
+    try {
+        const users = await User.find({ _id: { $ne: userID } });
+
+        return users;
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        throw new Error("Error fetching users");
+    }
+}
+
+export { findUserByEmailAndPassword, generateToken, registerToDatabase, isAlreadyRegistered, isVerified, listAllUsersExceptLoggedIn };

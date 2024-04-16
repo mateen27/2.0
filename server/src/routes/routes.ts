@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { loginUserHandler, registerUserHandler, verifiedUser } from '../controllers/controllers';
+import { fetchAllUsersHandler, loginUserHandler, registerUserHandler, verifiedUser } from '../controllers/controllers';
 import sendAndSaveOTP from '../middlewares/sendAndSaveOTP'
 import verifyOTP from '../middlewares/verifyOTP';
 
@@ -11,5 +11,7 @@ router.post('/login', loginUserHandler);
 router.post('/register', sendAndSaveOTP, registerUserHandler);
 // endpoint for verifing the otp of the user in the application
 router.post(`/verify/:userID`, verifyOTP, verifiedUser);
+// endpoint for fetching all the users in the application except the logged in user
+router.get('/fetchAllUsers/:userID', fetchAllUsersHandler);
 
 export default router;
