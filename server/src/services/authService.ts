@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 // file holding all the logic part of the application.
 
 import { UserInterface } from "./../models/userModel";
@@ -24,7 +24,7 @@ const findUserByEmailAndPassword = async (
         }
 
         // console.log('user is found',user);
-        
+
         // Compare the provided password with the hashed password stored in the database
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -56,7 +56,9 @@ const generateToken = async (userId: UserID): Promise<string | number> => {
         const expiresIn = process.env.SECRET_EXPIRATION;
 
         if (!secretKey || !expiresIn) {
-            throw new Error("Secret key or expiration not provided in environment variables");
+            throw new Error(
+                "Secret key or expiration not provided in environment variables"
+            );
         }
 
         // Generate token using jwt.sign()
@@ -70,10 +72,16 @@ const generateToken = async (userId: UserID): Promise<string | number> => {
             throw error;
         }
     }
-}
+};
 
 // function for registering the user inside the database
-const registerToDatabase = async (name: string, email: string, password: string, mobile: string, image: string): Promise<{ message: string }> => {
+const registerToDatabase = async (
+    name: string,
+    email: string,
+    password: string,
+    mobile: string,
+    image: string
+): Promise<{ message: string }> => {
     try {
         // logic for registering the user in the database
         const newUser = new User({
@@ -82,20 +90,20 @@ const registerToDatabase = async (name: string, email: string, password: string,
             password,
             mobile,
             image,
-        })
+        });
 
         // saving the user inside the database
         await newUser.save();
 
-        return { message: 'User registration successful' };
+        return { message: "User registration successful" };
     } catch (error) {
         console.error(`Error Registering the User! : ${error}`);
         throw new Error("Error registering the User!");
     }
-}
+};
 
 // function for finding if the user is already registered
-const isAlreadyRegistered = async ( email: string ): Promise<object | null> => {
+const isAlreadyRegistered = async (email: string): Promise<object | null> => {
     try {
         // logic for finding the user by email and password
         const user = await User.findOne({
@@ -108,12 +116,12 @@ const isAlreadyRegistered = async ( email: string ): Promise<object | null> => {
             return { message: "User not found" };
         }
 
-        return user.toObject(); 
+        return user.toObject();
     } catch (error) {
         console.error(`Error finding the User! : ${error}`);
         throw new Error("Error finding the User in the Database!");
     }
-}
+};
 
 // checking if the user is verified or not
 // Function to check if the user is verified or not
@@ -122,21 +130,50 @@ const isVerified = async (userID: string): Promise<boolean | undefined> => {
         const user = await User.findById(userID);
         return user ? user.verified : false;
     } catch (error) {
-        console.error('Error checking user verification status:', error);
+        console.error("Error checking user verification status:", error);
         return false;
     }
 };
 
 // function for listing all the users from the database except the one that is logged in & not in friend Request's List!
-const listAllUsersExceptLoggedIn = async (userID: string): Promise<object | undefined> => {
+const listAllUsersExceptLoggedIn = async (
+    userID: string
+): Promise<object | undefined> => {
     try {
-        const users = await User.find({ _id: { $ne: userID } });
+        const users = await User.find({
+            _id: { $ne: userID },
+            friendRequests: {
+                $not: {
+                    $elemMatch: {
+                        userID: userID,
+                    },
+                },
+            },
+            sentFriendRequests: {
+                $not: {
+                    $elemMatch: {
+                        userID: userID,
+                    },
+                },
+            },
+        });
 
         return users;
     } catch (error) {
         console.error("Error fetching users:", error);
         throw new Error("Error fetching users");
     }
-}
+};
 
-export { findUserByEmailAndPassword, generateToken, registerToDatabase, isAlreadyRegistered, isVerified, listAllUsersExceptLoggedIn };
+export {
+    findUserByEmailAndPassword,
+    generateToken,
+    registerToDatabase,
+    isAlreadyRegistered,
+    isVerified,
+    listAllUsersExceptLoggedIn,
+};
+
+// Intel
+// Microsoft
+// Paytm Payment Banks
