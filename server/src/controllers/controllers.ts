@@ -1,6 +1,6 @@
 import { Request , Response } from "express"
 import User from "../models/userModel";
-import { findUserByEmailAndPassword, generateToken, isAlreadyRegistered, listAllUsersExceptLoggedIn, registerToDatabase, updateFriendRequests, updateSentFriendRequests } from "../services/authService";
+import { fetchFriendRequests, findUserByEmailAndPassword, generateToken, isAlreadyRegistered, listAllUsersExceptLoggedIn, registerToDatabase, updateFriendRequests, updateSentFriendRequests } from "../services/authService";
 
 // logic for signing the user inside of the application
 const loginUserHandler = async ( req: Request , res: Response ) => {
@@ -114,14 +114,31 @@ const sendFriendRequestHandler = async( req: Request, res: Response ) => {
         const { userID } = req.params; 
 
         // update the sender's sentFriendRequest [add recipientId to their friend requests sent list]
-        await updateSentFriendRequests(userID, selectedUserId);
+        const senderResponse: any = await updateSentFriendRequests(userID, selectedUserId);
 
         // update the recipient's sentFriendRequest [add senderId to their friend requests sent list]
-        await updateFriendRequests(selectedUserId, userID);
+        const recipientResponse: any = await updateFriendRequests(selectedUserId, userID);
+
+        // return the response
+        res.status(200).json({ senderResponse, recipientResponse });
     } catch (error) {
         console.log('error sending friend request');
         res.status(500).json({ message: 'Internal Server Error' });
     }
 }
 
-export { loginUserHandler, registerUserHandler, verifiedUser, fetchAllUsersHandler, sendFriendRequestHandler };
+// logic for viewing all the friend requests of the current user
+const viewFriendRequestHandler = async (req: Request, res: Response) => {
+    try {
+        // accessing the logged in user's profile ID
+        const { userID } = req.params;
+
+        const users = await fetchFriendRequests(userID);
+        res.status(200).json( {users} );
+    } catch (error) {
+        console.log('error fetching the friend requests of the user', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+export { loginUserHandler, registerUserHandler, verifiedUser, fetchAllUsersHandler, sendFriendRequestHandler, viewFriendRequestHandler };

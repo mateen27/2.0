@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { fetchAllUsersHandler, loginUserHandler, registerUserHandler, sendFriendRequestHandler, verifiedUser } from '../controllers/controllers';
+import { fetchAllUsersHandler, loginUserHandler, registerUserHandler, sendFriendRequestHandler, verifiedUser, viewFriendRequestHandler } from '../controllers/controllers';
 import sendAndSaveOTP from '../middlewares/sendAndSaveOTP'
 import verifyOTP from '../middlewares/verifyOTP';
 
@@ -15,5 +15,7 @@ router.post(`/verify/:userID`, verifyOTP, verifiedUser);
 router.get('/fetchAllUsers/:userID', fetchAllUsersHandler);
 // endpoint for sending friend-requests to the person
 router.post('/friendRequests/:userID', sendFriendRequestHandler);
+// endpoint for viewing friend-requests of the person
+router.get('/friendRequests/:userID', viewFriendRequestHandler);
 
 export default router;

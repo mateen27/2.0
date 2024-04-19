@@ -196,6 +196,17 @@ const updateFriendRequests = async( recepientUserID: string, currentUserID: stri
         return 'Error updating recepient friend request list';
     }
 }
+
+// function for fetching the friend request of the current logged-in user
+const fetchFriendRequests = async (currentUserID: string): Promise<UserInterface | null> => {
+    try {
+        return await User.findById(currentUserID).populate("friendRequests", "name email image").lean();
+    } catch (error) {
+        console.log('Error fetching friend requests of the user', error);
+        throw new Error('Error fetching friend requests of the user');
+    }
+}
+
 export {
     findUserByEmailAndPassword,
     generateToken,
@@ -204,7 +215,8 @@ export {
     isVerified,
     listAllUsersExceptLoggedIn,
     updateSentFriendRequests,
-    updateFriendRequests
+    updateFriendRequests,
+    fetchFriendRequests
 };
 
 // Intel
