@@ -1,6 +1,6 @@
 import { Request , Response } from "express"
 import User from "../models/userModel";
-import { findUserByEmailAndPassword, generateToken, isAlreadyRegistered, listAllUsersExceptLoggedIn, registerToDatabase } from "../services/authService";
+import { findUserByEmailAndPassword, generateToken, isAlreadyRegistered, listAllUsersExceptLoggedIn, registerToDatabase, updateSentFriendRequests } from "../services/authService";
 
 // logic for signing the user inside of the application
 const loginUserHandler = async ( req: Request , res: Response ) => {
@@ -89,6 +89,7 @@ const verifiedUser = async (req: Request, res: Response) => {
     }
 };
 
+// logic for fetching all the users of the application except the logged in user & sent friendRequest and in friendRequest person
 const fetchAllUsersHandler = async (req: Request, res: Response) => {
     try {
         // accessing the logged in user's profile
@@ -104,4 +105,20 @@ const fetchAllUsersHandler = async (req: Request, res: Response) => {
     }
 };
 
-export { loginUserHandler, registerUserHandler, verifiedUser, fetchAllUsersHandler };
+// logic for sending friend requests to the person!
+const sendFriendRequestHandler = async( req: Request, res: Response ) => {
+    try {
+        // recepient user ID 
+        const { selectedUserId } = req.body;
+        // current user ID
+        const { userID } = req.params; 
+
+        // update the sender's sentFriendRequest [add recipientId to their friend requests sent list]
+        await updateSentFriendRequests(userID, selectedUserId);
+    } catch (error) {
+        console.log('error sending friend request');
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+}
+
+export { loginUserHandler, registerUserHandler, verifiedUser, fetchAllUsersHandler, sendFriendRequestHandler };
