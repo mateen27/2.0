@@ -181,6 +181,21 @@ const updateSentFriendRequests = async ( currentUserID: string, recepientUserID:
     }
 }
 
+// function to set recepient's friendRequest with sender id
+const updateFriendRequests = async( recepientUserID: string, currentUserID: string): Promise<String | undefined> => {
+    try {
+        // updating the recepient's friendRequest
+        await User.findByIdAndUpdate( recepientUserID, {
+            $push: {
+                friendRequests: currentUserID
+            },
+        })
+        return `Successfully updated recepient's friendRequest with Sender ID`;
+    } catch (error) {
+        console.log('error updating recepient friend request list', error);
+        return 'Error updating recepient friend request list';
+    }
+}
 export {
     findUserByEmailAndPassword,
     generateToken,
@@ -188,7 +203,8 @@ export {
     isAlreadyRegistered,
     isVerified,
     listAllUsersExceptLoggedIn,
-    updateSentFriendRequests
+    updateSentFriendRequests,
+    updateFriendRequests
 };
 
 // Intel

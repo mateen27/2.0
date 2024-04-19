@@ -1,6 +1,6 @@
 import { Request , Response } from "express"
 import User from "../models/userModel";
-import { findUserByEmailAndPassword, generateToken, isAlreadyRegistered, listAllUsersExceptLoggedIn, registerToDatabase, updateSentFriendRequests } from "../services/authService";
+import { findUserByEmailAndPassword, generateToken, isAlreadyRegistered, listAllUsersExceptLoggedIn, registerToDatabase, updateFriendRequests, updateSentFriendRequests } from "../services/authService";
 
 // logic for signing the user inside of the application
 const loginUserHandler = async ( req: Request , res: Response ) => {
@@ -115,6 +115,9 @@ const sendFriendRequestHandler = async( req: Request, res: Response ) => {
 
         // update the sender's sentFriendRequest [add recipientId to their friend requests sent list]
         await updateSentFriendRequests(userID, selectedUserId);
+
+        // update the recipient's sentFriendRequest [add senderId to their friend requests sent list]
+        await updateFriendRequests(selectedUserId, userID);
     } catch (error) {
         console.log('error sending friend request');
         res.status(500).json({ message: 'Internal Server Error' });
