@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { acceptFriendRequestHandler, fetchAllUsersHandler, loginUserHandler, registerUserHandler, sendFriendRequestHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
+import { acceptFriendRequestHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, loginUserHandler, registerUserHandler, sendFriendRequestHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
 import sendAndSaveOTP from '../middlewares/sendAndSaveOTP'
 import verifyOTP from '../middlewares/verifyOTP';
 
@@ -23,5 +23,9 @@ router.post('/friend-request/accept', acceptFriendRequestHandler);
 router.get('/followers/:userID', viewFollowersHandler);
 // endpoint to display all the following of the current logged-in user
 router.get('/followings/:userID', viewFollowingsHandler);
+// endpoint to display all the followers of the normal user
+router.get('/followers', fetchFollowersHandler);
+// endpoint for displaying the following of the normal user
+router.get('/following', fetchFollowingHandler);
 
 export default router;

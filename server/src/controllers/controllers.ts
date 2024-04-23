@@ -5,6 +5,8 @@ import {
   fetchFollowers,
   fetchFollowing,
   fetchFriendRequests,
+  fetchUserFollowersHandler,
+  fetchUserFollowingHandler,
   findUserByEmailAndPassword,
   generateToken,
   isAlreadyRegistered,
@@ -218,6 +220,42 @@ const viewFollowingsHandler = async ( req: Request, res: Response ) => {
     }
 }
 
+// logic for displaying the followers of the specific user
+const fetchFollowersHandler = async ( req: Request, res: Response ) => {
+    try {
+        const { userID } = req.body;
+
+        // finding if the user exists or not 
+        const user = await fetchUserFollowersHandler(userID);
+
+        const followers = user?.followers;
+
+        res.status(200).json(followers);
+    } catch (error) {
+        console.log("error fetching the followers of the user", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
+// logic for displaying the following of the user of the specified user
+const fetchFollowingHandler = async ( req: Request, res: Response ) => {
+    try {
+        // accessing the userID from the body
+        const { userID } = req.body;
+
+        // finding if the user exists or not
+        const user = await fetchUserFollowingHandler(userID);
+
+        // accessing the following of the user
+        const following = user?.following;
+
+        res.status(200).json(following);
+    } catch (error) {
+        console.log("error fetching the following of the user", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
 export {
   loginUserHandler,
   registerUserHandler,
@@ -227,5 +265,7 @@ export {
   viewFriendRequestHandler,
   acceptFriendRequestHandler,
   viewFollowersHandler,
-  viewFollowingsHandler
+  viewFollowingsHandler,
+  fetchFollowersHandler,
+  fetchFollowingHandler
 };

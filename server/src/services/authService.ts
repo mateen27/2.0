@@ -275,6 +275,26 @@ const fetchFollowing = async ( userID: string ): Promise< UserInterface | null >
     }
 }
 
+// function for fetching all the followers of the user
+const fetchUserFollowersHandler = async ( userID: string ): Promise< UserInterface | null > => {
+    try {
+        return await User.findById(userID).populate('followers', "name email mobile image is_online followers following uploadedMovies");
+    } catch (error) {
+        console.log('error fetching followers of the specified user', error);
+        throw error;
+    }
+}
+
+// function for fetching all the followings of the user
+const fetchUserFollowingHandler = async ( userID: string ): Promise< UserInterface | null > => {
+    try {
+        return await User.findById(userID).populate('following', 'name email mobile image is_online followers following uploadedMovies');
+    } catch (error) {
+        console.log('error fetching user following', error);
+        throw error;
+    }
+}
+
 export {
   findUserByEmailAndPassword,
   generateToken,
@@ -287,7 +307,9 @@ export {
   fetchFriendRequests,
   acceptFriendRequest,
   fetchFollowers,
-  fetchFollowing
+  fetchFollowing,
+  fetchUserFollowersHandler,
+  fetchUserFollowingHandler
 };
 
 // Intel

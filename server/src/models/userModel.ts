@@ -17,6 +17,7 @@ export interface UserInterface extends Document {
     count: number;
     movie_links: string[];
     is_online: boolean;
+    uploadedPosts: mongoose.Types.ObjectId[];
   };
   }
 
@@ -83,6 +84,10 @@ const userModelSchema: Schema = new Schema({
     type: Boolean,
     default: false,
   },
+  uploadedPosts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
+  }]
 }, {
   timestamps: true
 });
