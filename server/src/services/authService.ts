@@ -255,6 +255,26 @@ const acceptFriendRequest = async (userID: string, recepientID: string) => {
   }
 };
 
+// function to fetch all the followers of the user
+const fetchFollowers = async ( userID: string ): Promise < UserInterface | null > => {
+    try {
+        return await User.findById(userID).populate('followers', "name email mobile image is_online followers following uploadedMovies")
+    } catch (error) {
+        console.log('Error fetching followers', error);
+        throw error;
+    }
+}
+
+// function for fetching all the followings of the user
+const fetchFollowing = async ( userID: string ): Promise< UserInterface | null > => {
+    try {
+        return await User.findById(userID).populate('following', 'name email mobile image is_online followers following uploadedMovies')
+    } catch (error) {
+        console.log('error fetching following', error);
+        throw error;
+    }
+}
+
 export {
   findUserByEmailAndPassword,
   generateToken,
@@ -266,6 +286,8 @@ export {
   updateFriendRequests,
   fetchFriendRequests,
   acceptFriendRequest,
+  fetchFollowers,
+  fetchFollowing
 };
 
 // Intel

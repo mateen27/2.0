@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import User from "../models/userModel";
 import {
   acceptFriendRequest,
+  fetchFollowers,
+  fetchFollowing,
   fetchFriendRequests,
   findUserByEmailAndPassword,
   generateToken,
@@ -178,6 +180,44 @@ const acceptFriendRequestHandler = async (req: Request, res: Response) => {
   }
 };
 
+// logic for displaying all the followers of the logged in user
+const viewFollowersHandler = async (req: Request, res: Response) => {
+  try {
+    // accesing userID from the params
+    const { userID } = req.params;
+
+    // finding if the user the user exists or not
+    const user = await fetchFollowers(userID);
+
+    const followers = user?.followers;
+
+    res.status(200).json(followers);
+  } catch (error) {
+    console.log("error fetching the followers of the user", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// logic for displaying all the followings of the user
+const viewFollowingsHandler = async ( req: Request, res: Response ) => {
+    try {
+        // accessing the userID
+        const { userID } = req.params;
+
+        // finding if the user the user exists or not
+        const user = await fetchFollowing(userID);
+
+        // accesianing the following of the user
+        const following = user?.following;
+
+        // returning the response
+        res.status(200).json(following);
+    } catch (error) {
+        console.log("error fetching the followers of the user", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
 export {
   loginUserHandler,
   registerUserHandler,
@@ -186,4 +226,6 @@ export {
   sendFriendRequestHandler,
   viewFriendRequestHandler,
   acceptFriendRequestHandler,
+  viewFollowersHandler,
+  viewFollowingsHandler
 };
