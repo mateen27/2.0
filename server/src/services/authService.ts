@@ -49,7 +49,7 @@ const findUserByEmailAndPassword = async (
 // function for generating the token for the user which is signing into the application
 // creating a specific type/interface
 type UserID = string | number;
-const generateToken = async (userId: UserID): Promise<string | number> => {
+const generateToken = async (userId: UserID): Promise<String | number> => {
   try {
     // accesing the secret key from .env file
     const secretKey = process.env.SECRET_KEY;
@@ -104,7 +104,7 @@ const registerToDatabase = async (
 };
 
 // function for finding if the user is already registered
-const isAlreadyRegistered = async (email: string): Promise<object | null> => {
+const isAlreadyRegistered = async (email: string): Promise<Object | null> => {
   try {
     // logic for finding the user by email and password
     const user = await User.findOne({
@@ -126,7 +126,7 @@ const isAlreadyRegistered = async (email: string): Promise<object | null> => {
 
 // checking if the user is verified or not
 // Function to check if the user is verified or not
-const isVerified = async (userID: string): Promise<boolean | undefined> => {
+const isVerified = async (userID: string): Promise<Boolean | undefined> => {
   try {
     const user = await User.findById(userID);
     return user ? user.verified : false;
@@ -139,7 +139,7 @@ const isVerified = async (userID: string): Promise<boolean | undefined> => {
 // function for listing all the users from the database except the one that is logged in & not in friend Request's List!
 const listAllUsersExceptLoggedIn = async (
   userID: string
-): Promise<object | undefined> => {
+): Promise<Object | undefined> => {
   try {
     const users = await User.find({
       _id: { $ne: userID },
@@ -295,6 +295,35 @@ const fetchUserFollowingHandler = async ( userID: string ): Promise< UserInterfa
     }
 }
 
+// function for finding the user by its id
+const findUserByID = async ( userID: string ): Promise< Boolean | null > => {
+    try {
+        // checking if the user is already present with this user id or not
+        const existingUser = await User.findById(userID);
+        // if not present
+        if (!existingUser) {
+            return false;
+        }
+        return true;
+
+    } catch (error) {
+        console.log('error finding the user by its userID', error);
+        throw error;
+    }
+}
+
+// function for updating the user's uploaded posts data in the backend
+const updateUserUploadedPosts = async ( userID: string, savedPost: any ) => {
+    try {
+        return await User.findByIdAndUpdate(userID, { $push: {
+            uploadedPosts: savedPost._id
+        }})
+    } catch (error) {
+        console.log('error updating the user uploaded posts data', error);
+        throw error;
+    }
+}
+
 export {
   findUserByEmailAndPassword,
   generateToken,
@@ -309,7 +338,9 @@ export {
   fetchFollowers,
   fetchFollowing,
   fetchUserFollowersHandler,
-  fetchUserFollowingHandler
+  fetchUserFollowingHandler,
+  findUserByID,
+  updateUserUploadedPosts
 };
 
 // Intel

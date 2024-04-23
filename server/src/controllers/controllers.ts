@@ -8,13 +8,17 @@ import {
   fetchUserFollowersHandler,
   fetchUserFollowingHandler,
   findUserByEmailAndPassword,
+  findUserByID,
   generateToken,
   isAlreadyRegistered,
   listAllUsersExceptLoggedIn,
   registerToDatabase,
   updateFriendRequests,
   updateSentFriendRequests,
+  updateUserUploadedPosts,
 } from "../services/authService";
+import mongoose from "mongoose";
+import Post, { PostInterface } from "../models/postModel";
 
 // logic for signing the user inside of the application
 const loginUserHandler = async (req: Request, res: Response) => {
@@ -256,6 +260,46 @@ const fetchFollowingHandler = async ( req: Request, res: Response ) => {
     }
 }
 
+// logic for uploading the post to the server
+const uploadPostHandler = async ( req: Request, res: Response ) => {
+    try {
+        // accessing the userID from the params
+        const { userID } = req.params;
+        const { type, contentUrl } = req.body;
+
+        // checking if the user exists or not
+        const existingUser = await findUserByID(userID);
+
+        if ( !existingUser ) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Convert userId to a mongoose.Types.ObjectId
+        const userIdObject = new mongoose.Types.ObjectId(userID);
+
+        // creating the post for the user
+        const newPost: PostInterface = new Post({
+            type,
+            contentUrl,
+            userId: userIdObject,
+            likes: [],
+            comments: []
+        })
+
+        // save the post to the database
+        const savedPost = await newPost.save();
+
+        // update the user's uploadedPosts array with the new post's ID
+        await updateUserUploadedPosts(userID, savedPost);
+
+        res.status(201).json({ message: 'Post uploaded successfully', post: savedPost });
+
+    } catch (error) {
+        console.log('error uploading the post', error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+}
+
 export {
   loginUserHandler,
   registerUserHandler,
@@ -267,5 +311,6 @@ export {
   viewFollowersHandler,
   viewFollowingsHandler,
   fetchFollowersHandler,
-  fetchFollowingHandler
+  fetchFollowingHandler,
+  uploadPostHandler
 };
