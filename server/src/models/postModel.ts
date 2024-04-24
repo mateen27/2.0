@@ -3,20 +3,20 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface PostInterface extends Document {
     type: string;
     contentUrl: string;
-    userId: mongoose.Types.ObjectId;
+    userID: mongoose.Types.ObjectId;
     likes: mongoose.Types.ObjectId[];
     comments: CommentInterface[];
 }
 
 // Define the interface for a comment
 export interface CommentInterface {
-    userId: mongoose.Types.ObjectId;
+    userID: mongoose.Types.ObjectId;
     text: string;
 }
 
 // Define the schema for a comment
 const commentSchema: Schema = new Schema({
-    userId: {
+    userID: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true
@@ -41,9 +41,8 @@ const postSchema: Schema = new Schema({
     },
     contentDescription: {
         type: String,
-        
     },
-    userId: {
+    userID: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true

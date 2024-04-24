@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { acceptFriendRequestHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, loginUserHandler, registerUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
+import { acceptFriendRequestHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, loginUserHandler, postHandler, registerUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
 import sendAndSaveOTP from '../middlewares/sendAndSaveOTP'
 import verifyOTP from '../middlewares/verifyOTP';
 
@@ -33,6 +33,8 @@ router.post('/upload-post/:userID', uploadPostHandler);
 router.delete('/delete-post/:userID', deletePostHandler);
 // endpoint for updating the description of the user post
 router.put('/update-post-description/:userID', updatePostDescriptionHandler);
+// endpoint for fetching the posts for the user feed
+router.get('/posts', postHandler);
 
 
 

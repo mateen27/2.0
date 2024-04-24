@@ -5,6 +5,7 @@ import {
   fetchFollowers,
   fetchFollowing,
   fetchFriendRequests,
+  fetchPosts,
   fetchUserFollowersHandler,
   fetchUserFollowingHandler,
   findPostById,
@@ -372,6 +373,17 @@ const updatePostDescriptionHandler = async ( req: Request, res: Response ) => {
   }
 }
 
+// endpoint for displaying the posts on to the feed of the application
+const postHandler = async ( req: Request, res: Response ) => {
+  try {
+    // fetching the posts fro the feed
+    const posts = await fetchPosts();
+  } catch (error) {
+    console.log('error fetching the posts on to the feed of the application', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 export {
   loginUserHandler,
   registerUserHandler,
@@ -386,5 +398,6 @@ export {
   fetchFollowingHandler,
   uploadPostHandler,
   deletePostHandler,
-  updatePostDescriptionHandler
+  updatePostDescriptionHandler,
+  postHandler
 };

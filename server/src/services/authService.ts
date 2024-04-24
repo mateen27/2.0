@@ -6,7 +6,7 @@ import User from "../models/userModel";
 import Chat from "../models/chatModel";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import Post from "../models/postModel";
+import Post, { PostInterface } from "../models/postModel";
 
 // Define the return type as Promise<UserInterface | null> since the function is async
 const findUserByEmailAndPassword = async (
@@ -341,6 +341,19 @@ const findPostById = async ( postID: string ): Promise<any> => {
   }
 }
 
+// function to fetch the posts from the database to display them on the feed list
+const fetchPosts = async (): Promise<PostInterface[]> => {
+  try {
+    const posts = await Post.find().populate('userID', 'name email').lean();
+
+    return posts;
+  } catch (error) {
+    console.log('error fetching posts', error);
+    throw error;
+  }
+}
+
+
 export {
   findUserByEmailAndPassword,
   generateToken,
@@ -358,7 +371,8 @@ export {
   fetchUserFollowingHandler,
   findUserByID,
   updateUserUploadedPosts,
-  findPostById
+  findPostById,
+  fetchPosts
 };
 
 // Intel
