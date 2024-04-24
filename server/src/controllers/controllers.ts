@@ -7,6 +7,7 @@ import {
   fetchFriendRequests,
   fetchUserFollowersHandler,
   fetchUserFollowingHandler,
+  findPostById,
   findUserByEmailAndPassword,
   findUserByID,
   generateToken,
@@ -265,7 +266,7 @@ const uploadPostHandler = async ( req: Request, res: Response ) => {
     try {
         // accessing the userID from the params
         const { userID } = req.params;
-        const { type, contentUrl } = req.body;
+        const { type, contentUrl, contentDescription } = req.body;
 
         // checking if the user exists or not
         const existingUser = await findUserByID(userID);
@@ -281,6 +282,7 @@ const uploadPostHandler = async ( req: Request, res: Response ) => {
         const newPost: PostInterface = new Post({
             type,
             contentUrl,
+            contentDescription,
             userId: userIdObject,
             likes: [],
             comments: []
@@ -300,6 +302,76 @@ const uploadPostHandler = async ( req: Request, res: Response ) => {
     }
 }
 
+// endpoint for deleting the post uploaded by the user
+const deletePostHandler = async ( req: Request, res: Response ) => {
+  try {
+    // accessing the userID from params and postID from the body
+    const { userID } = req.params;
+    const { postID } = req.body;
+
+    // checking if the user exists or not
+    const existingUser = await findUserByID(userID);
+    // user not found 
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' });
+  }
+
+  // checking if the post exists or not
+  const post = await findPostById(postID);
+
+  // post not found
+  if ( !post ) {
+    return res.status(404).json({ message: 'Post not found' });
+  }
+
+  if (!post.userID.equals(userID)) {
+    return res.status(403).json({ message: 'You are not authorized to delete this post' });
+}
+
+// Delete the post
+await post.remove();
+
+// Remove the post from the user's uploadedPosts array
+await User.findByIdAndUpdate(userID, { $pull: { uploadedPosts: postID } });
+
+res.status(200).json({ message: 'Post deleted successfully' });
+
+
+  } catch (error) {
+    console.log('error deleting the post uploaded by the user', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+// endpoint for udating the description of the user post which he have uploaded
+const updatePostDescriptionHandler = async ( req: Request, res: Response ) => {
+  try {
+    // accessing the userID from the params and accessing the post ID and description from the body
+    const { userID } = req.params;
+    const { postID, description } = req.body;
+
+    // checking if the post exists or not
+    const post = await findPostById(postID);
+     if ( !post ) {
+       return res.status(404).json({ message: 'Post not found' });
+     }
+
+     // Verify that the user is authorized to modify the post
+     if (!post.userID.equals(userID)) {
+      return res.status(403).json({ message: 'You are not authorized to modify this post' });
+  }
+
+  // Update the description of the post
+  post.contentDescription = description;
+  const updatedPost = await post.save();
+
+  res.status(200).json({ message: 'Post description updated successfully', post: updatedPost })
+  } catch (error) {
+    console.log('error updating the description of the user', error)
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 export {
   loginUserHandler,
   registerUserHandler,
@@ -312,5 +384,7 @@ export {
   viewFollowingsHandler,
   fetchFollowersHandler,
   fetchFollowingHandler,
-  uploadPostHandler
+  uploadPostHandler,
+  deletePostHandler,
+  updatePostDescriptionHandler
 };

@@ -6,6 +6,7 @@ import User from "../models/userModel";
 import Chat from "../models/chatModel";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import Post from "../models/postModel";
 
 // Define the return type as Promise<UserInterface | null> since the function is async
 const findUserByEmailAndPassword = async (
@@ -324,6 +325,22 @@ const updateUserUploadedPosts = async ( userID: string, savedPost: any ) => {
     }
 }
 
+// function for finding the post by its ID
+const findPostById = async ( postID: string ): Promise<any> => {
+  try {
+    // checking if the post is already present with this post id or not
+    const existingPost = await Post.findById(postID);
+    // if not present
+    if (!existingPost) {
+      return null;
+    }
+    return existingPost;
+  } catch (error) {
+    console.log('error finding the post by the post ID', error);
+    throw error;
+  }
+}
+
 export {
   findUserByEmailAndPassword,
   generateToken,
@@ -340,7 +357,8 @@ export {
   fetchUserFollowersHandler,
   fetchUserFollowingHandler,
   findUserByID,
-  updateUserUploadedPosts
+  updateUserUploadedPosts,
+  findPostById
 };
 
 // Intel
