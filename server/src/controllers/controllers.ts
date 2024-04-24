@@ -8,6 +8,7 @@ import {
   fetchPosts,
   fetchUserFollowersHandler,
   fetchUserFollowingHandler,
+  fetchUserPosts,
   findPostById,
   findUserByEmailAndPassword,
   findUserByID,
@@ -378,8 +379,59 @@ const postHandler = async ( req: Request, res: Response ) => {
   try {
     // fetching the posts fro the feed
     const posts = await fetchPosts();
+
+    return posts;
   } catch (error) {
     console.log('error fetching the posts on to the feed of the application', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+// endpoint for fetching the posts of the logged in user
+const userPostHandler = async ( req: Request, res: Response ) => {
+  try {
+    // accessing the userID from the parameters
+    const { userID } = req.params;
+
+    // checking if the user is authenticated
+    const user = await findUserByID(userID);
+    // user does not exist
+    if ( !user ) {
+      res.status(404).json({ message: 'User not found' });
+    }
+
+    // fetching the user's posts from the database
+    const posts = await fetchUserPosts(userID);
+
+    return posts;
+  } catch (error) {
+    console.log('error fetching the posts of the logged in user', error);
+    res.status(500).json({ message: 'Error fetching the posts of the logged in user' });
+  }
+}
+
+// endpoint for fetching the posts of the specific user
+const fetchPostsHandler = async (req: Request, res: Response ) => {
+  try {
+    // accesing the posts of the user only when the user is following the user
+    const { userID } = req.params;
+    const { recipientID } = req.body;
+
+    // Checking if the current user is following the recipient
+    const currentUser = await User.findById(userID);
+    const isFollowing = currentUser?.following.includes(recipientID);
+
+    // when the user is not following the user
+    if ( !isFollowing ) {
+      return res.status(403).json({ message: `You are not authorized to view this user\'s posts` });
+    }
+
+    // fetch the users posts
+    const post = await Post.find({ userID: recipientID }).populate('userID', 'name email');
+
+    res.status(200).json({post});
+  } catch (error) {
+    console.log('error fetching posts of the specific user', error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
@@ -399,5 +451,7 @@ export {
   uploadPostHandler,
   deletePostHandler,
   updatePostDescriptionHandler,
-  postHandler
+  postHandler,
+  userPostHandler,
+  fetchPostsHandler
 };

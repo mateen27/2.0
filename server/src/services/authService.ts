@@ -353,6 +353,19 @@ const fetchPosts = async (): Promise<PostInterface[]> => {
   }
 }
 
+// function for fetching the loggedin user's posts
+const fetchUserPosts = async ( userID: string ): Promise<PostInterface[]> => {
+  try {
+    // fetching the posts of the user from the database
+    const posts = await Post.find({ userID }).populate('userID', 'name email').lean();
+
+    return posts;
+  } catch (error) {
+    console.log('error fetching the user posts', error);
+    throw error;
+  }
+}
+
 
 export {
   findUserByEmailAndPassword,
@@ -372,7 +385,8 @@ export {
   findUserByID,
   updateUserUploadedPosts,
   findPostById,
-  fetchPosts
+  fetchPosts,
+  fetchUserPosts
 };
 
 // Intel
