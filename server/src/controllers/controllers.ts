@@ -487,6 +487,85 @@ const likePostsHandler = async (req: Request, res: Response) => {
   }
 };
 
+// endpoint for commenting on the post of the user
+const commentPostHandler = async ( req: Request, res: Response ) => {
+  try {
+    // accesing the params and body
+    const { userID } = req.params;
+    const { postID, comment } = req.body;
+
+    // converting the iDS to Object ID
+    const userIDObj = new mongoose.Types.ObjectId(userID);
+    const postIdObj = new mongoose.Types.ObjectId(postID);
+
+    // checking if the user exists or not
+    const existingUser = await User.findById(userIDObj);
+    // user not found
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // checking if the post exists or not
+    const post = await Post.findById(postIdObj);
+    // post not found
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // add comments to the post if the post already exists
+    post.comments.push({ userID: userIDObj, text: comment });
+    await post.save();
+
+    // Notify the user who have commented to the post
+    // checking which user posted the post
+    const postByUser = await User.findById(post.userID);
+    if ( postByUser ) {
+      await createNotification(post.userID.toString(), `${existingUser.name} commented on your post.`, 'comment', postID);
+    }
+
+    res.status(200).json({ message: 'Comment posted successfully' });
+  } catch (error) {
+    console.log('error commenting on post', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+// endpoint for deleteing the post comments
+const deleteCommentPostHandler = async (req: Request, res: Response) => {
+  try {
+      const { userID, postID, commentID } = req.body;
+
+      const userIDObj = new mongoose.Types.ObjectId(userID);
+      const postIDObj = new mongoose.Types.ObjectId(postID);
+      const commentIDObj = new mongoose.Types.ObjectId(commentID);
+
+      // Check if the user is authorized to delete the post
+      const post = await Post.findOne({ _id: postIDObj, userID: userIDObj });
+
+      console.log('post log', post);
+      
+
+      // if (!post) {
+      //     return res.status(403).json({ message: 'You are not authorized to delete this post' });
+      // }
+
+      // // Delete the comment from the post
+      // const updatedPost = await Post.findOneAndUpdate(
+      //     { _id: postIDObj, 'comments._id': commentIDObj },
+      //     { $pull: { comments: { _id: commentIDObj } } },
+      //     { new: true }
+      // );
+
+      // if (!updatedPost) {
+      //     return res.status(404).json({ message: 'Comment not found' });
+      // }
+
+      // res.status(200).json({ message: 'Comment deleted successfully', post: updatedPost });
+  } catch (error) {
+      console.log('Error deleting comment:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
 
 export {
   loginUserHandler,
@@ -506,5 +585,7 @@ export {
   postHandler,
   userPostHandler,
   fetchPostsHandler,
-  likePostsHandler
+  likePostsHandler,
+  commentPostHandler,
+  deleteCommentPostHandler
 };

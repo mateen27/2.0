@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { acceptFriendRequestHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchPostsHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
+import { acceptFriendRequestHandler, commentPostHandler, deleteCommentPostHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchPostsHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
 import sendAndSaveOTP from '../middlewares/sendAndSaveOTP'
 import verifyOTP from '../middlewares/verifyOTP';
 
@@ -41,10 +41,11 @@ router.get('/userPosts/:userID', userPostHandler);                              
 router.get('/fetchPosts/:userID', fetchPostsHandler);                           // working API
 // endpoint for liking the post
 router.post('/like-posts/:userID', likePostsHandler);                           // working API
-// endpoint for unliking the post
-// router.post('/unlike-posts/:userID', unLikePostsHandler);
 // endpoint for commenting on the post
-// endpoint for uncommenting/deleting comment from the post
+router.post('/comment-posts/:userID', commentPostHandler);                      // working API
+// // endpoint for uncommenting/deleting comment from the post
+// router.delete('/comment-posts', deleteCommentPostHandler);
+
 
 
 
