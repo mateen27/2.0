@@ -123,7 +123,7 @@ const fetchAllUsersHandler = async (req: Request, res: Response) => {
     // Making the query in the database where _id does not include the loggedInUserId
     const users = await listAllUsersExceptLoggedIn(loggedInUser);
 
-    res.status(200).json({ users });
+    res.status(200).json( {users} );
   } catch (error) {
     console.log("Error fetching the users:", error);
     res.status(500).json({ message: "Error fetching all the users!" });
@@ -176,7 +176,8 @@ const viewFriendRequestHandler = async (req: Request, res: Response) => {
 const acceptFriendRequestHandler = async (req: Request, res: Response) => {
   try {
     // accesing the userID and the recipient ID of the user
-    const { userID, recepientID } = req.body;
+    const { userID } = req.params;
+    const { recepientID } = req.body;
 
     // redirecting to the services file
     await acceptFriendRequest(userID, recepientID);
@@ -271,21 +272,18 @@ const uploadPostHandler = async ( req: Request, res: Response ) => {
         const { type, contentUrl, contentDescription } = req.body;
 
         // checking if the user exists or not
-        const existingUser = await findUserByID(userID);
+        const existingUser = await User.findById(userID);
 
         if ( !existingUser ) {
             return res.status(404).json({ message: "User not found" });
         }
-
-        // Convert userId to a mongoose.Types.ObjectId
-        const userIdObject = new mongoose.Types.ObjectId(userID);
 
         // creating the post for the user
         const newPost: PostInterface = new Post({
             type,
             contentUrl,
             contentDescription,
-            userId: userIdObject,
+            userID,
             likes: [],
             comments: []
         })
@@ -331,7 +329,8 @@ const deletePostHandler = async ( req: Request, res: Response ) => {
 }
 
 // Delete the post
-await post.remove();
+await Post.deleteOne({ _id: postID });
+
 
 // Remove the post from the user's uploadedPosts array
 await User.findByIdAndUpdate(userID, { $pull: { uploadedPosts: postID } });
@@ -351,6 +350,7 @@ const updatePostDescriptionHandler = async ( req: Request, res: Response ) => {
     // accessing the userID from the params and accessing the post ID and description from the body
     const { userID } = req.params;
     const { postID, description } = req.body;
+    const userIDObj = new mongoose.Types.ObjectId(userID)
 
     // checking if the post exists or not
     const post = await findPostById(postID);
@@ -358,8 +358,12 @@ const updatePostDescriptionHandler = async ( req: Request, res: Response ) => {
        return res.status(404).json({ message: 'Post not found' });
      }
 
+    //  console.log('post log', post.userID);
+    //  console.log('userID Object ', userIDObj);
+    //  console.log('is equal or not', post.userID.equals(userIDObj));
+
      // Verify that the user is authorized to modify the post
-     if (!post.userID.equals(userID)) {
+     if (!post.userID.equals(userIDObj)) {
       return res.status(403).json({ message: 'You are not authorized to modify this post' });
   }
 
@@ -380,7 +384,7 @@ const postHandler = async ( req: Request, res: Response ) => {
     // fetching the posts fro the feed
     const posts = await fetchPosts();
 
-    return posts;
+    return res.status(200).json({ message: 'Posts fetched successfully', post: posts });
   } catch (error) {
     console.log('error fetching the posts on to the feed of the application', error);
     res.status(500).json({ message: "Internal Server Error" });
@@ -403,7 +407,7 @@ const userPostHandler = async ( req: Request, res: Response ) => {
     // fetching the user's posts from the database
     const posts = await fetchUserPosts(userID);
 
-    return posts;
+    return res.status(200).json({ message: 'Posts successfully fetched', post: posts});
   } catch (error) {
     console.log('error fetching the posts of the logged in user', error);
     res.status(500).json({ message: 'Error fetching the posts of the logged in user' });
@@ -436,6 +440,54 @@ const fetchPostsHandler = async (req: Request, res: Response ) => {
   }
 }
 
+// endpoint for liking the post of the user and notifying the user
+const likePostsHandler = async (req: Request, res: Response) => {
+  try {
+    // accessing the userID from the parameters
+    const { userID } = req.params;
+    // accessing the postID from the body
+    const { postID } = req.body;
+
+    const userIDObj = new mongoose.Types.ObjectId(userID);
+    const postIdObj = new mongoose.Types.ObjectId(postID);
+
+    // checking if the user exists or not
+    const existingUser = await User.findById(userIDObj);
+    // user not found
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // checking if the post exists or not
+    const post = await Post.findById(postIdObj);
+    // post not found
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // checking if the user has already liked the post
+    if (post.likes.includes(userIDObj)) {
+      return res.status(400).json({ message: 'You have already liked this post' });
+    }
+
+    // if the user has not liked the post yet
+    post.likes.push(userIDObj);
+    await post.save();
+
+    // notifying the user who has uploaded the post
+    const author: any = await User.findById(post.userID);
+    
+    // console.log(typeof author);
+    // console.log(author)
+
+    res.status(200).json({ message: 'Post liked successfully' });
+  } catch (error) {
+    console.log('Error liking post:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+
 export {
   loginUserHandler,
   registerUserHandler,
@@ -453,5 +505,6 @@ export {
   updatePostDescriptionHandler,
   postHandler,
   userPostHandler,
-  fetchPostsHandler
+  fetchPostsHandler,
+  likePostsHandler
 };

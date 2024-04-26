@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 export interface PostInterface extends Document {
     type: string;
     contentUrl: string;
+    contentDescription: string;
     userID: mongoose.Types.ObjectId;
     likes: mongoose.Types.ObjectId[];
     comments: CommentInterface[];
@@ -17,7 +18,7 @@ export interface CommentInterface {
 // Define the schema for a comment
 const commentSchema: Schema = new Schema({
     userID: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
@@ -43,12 +44,12 @@ const postSchema: Schema = new Schema({
         type: String,
     },
     userID: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     likes: [{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
     comments: [commentSchema]

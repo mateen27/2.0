@@ -205,49 +205,63 @@ const updateFriendRequests = async (
   }
 };
 
-// function for fetching the friend request of the current logged-in user
+// function for fetching the friend requests of the user
 const fetchFriendRequests = async (
   currentUserID: string
-): Promise<UserInterface | null> => {
+): Promise<{ _id: mongoose.Types.ObjectId, name: string, email: string }[]> => {
   try {
-    return await User.findById(currentUserID)
-      .populate("friendRequests", "name email image")
-      .lean();
+    const user = await User.findById(currentUserID).populate({
+      path: "friendRequests",
+      select: "name email",
+      model: "User"
+    }).lean<UserInterface>();
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user.friendRequests.map((friend: any) => ({
+      _id: friend._id,
+      name: friend.name,
+      email: friend.email
+    }));
   } catch (error) {
     console.log("Error fetching friend requests of the user", error);
     throw new Error("Error fetching friend requests of the user");
   }
 };
 
-// function for accepting the friend Requests
+// function for accepting the friend request of the users
 const acceptFriendRequest = async (userID: string, recepientID: string) => {
   try {
     // Convert strings to ObjectId
     const senderId = new mongoose.Types.ObjectId(userID);
     const recepientId = new mongoose.Types.ObjectId(recepientID);
 
-    // checking for the id's if they are valid or not
+    // Query sender and recipient documents
     const sender = await User.findById(senderId);
     const recepient = await User.findById(recepientId);
 
-    // ensure that both sender and the recepient are valid
+    // Check if sender and recipient exist
     if (!sender || !recepient) {
       throw new Error("Invalid sender or recipient ID.");
     }
 
-    // pushing the id's into the friends field in the database!
-    sender.following.push(recepientId);
-    recepient.followers.push(senderId);
+    // Push sender ID to recipient's followers
+    recepient.following.push(senderId);
 
-    // removing the id's from sentFriendRequest and friendRequest!
-    recepient.friendRequests = recepient.friendRequests.filter(
-      (requests) => requests !== senderId
-    );
-    sender.sentFriendRequests = sender.sentFriendRequests.filter(
-      (requests) => requests !== recepientId
+    // Push recipient ID to sender's following
+    sender.followers.push(recepientId);
+
+    // Remove sender ID from recipient's friend requests
+    recepient.sentFriendRequests = recepient.sentFriendRequests.filter(
+      (requestId) => requestId.toString() !== senderId.toString()
     );
 
-    // Save the changes to the database
+    // Remove recipient ID from sender's sent friend requests
+    sender.friendRequests = sender.friendRequests.filter(
+      (requestId) => requestId.toString() !== recepientId.toString()
+    );
+
+    // Save changes
     await sender.save();
     await recepient.save();
   } catch (error) {
@@ -255,6 +269,7 @@ const acceptFriendRequest = async (userID: string, recepientID: string) => {
     throw new Error("Error accepting friend requests of the user");
   }
 };
+
 
 // function to fetch all the followers of the user
 const fetchFollowers = async ( userID: string ): Promise < UserInterface | null > => {
@@ -326,25 +341,29 @@ const updateUserUploadedPosts = async ( userID: string, savedPost: any ) => {
 }
 
 // function for finding the post by its ID
-const findPostById = async ( postID: string ): Promise<any> => {
+const findPostById = async (postID: string): Promise<PostInterface | null> => {
   try {
-    // checking if the post is already present with this post id or not
+    // Use findById to directly retrieve the post from the database
     const existingPost = await Post.findById(postID);
-    // if not present
+    
+    // If post is not found, return null
     if (!existingPost) {
       return null;
     }
+
+    // If post is found, return the Mongoose model instance
     return existingPost;
   } catch (error) {
-    console.log('error finding the post by the post ID', error);
+    console.log('Error finding the post by the post ID', error);
     throw error;
   }
-}
+};
+
 
 // function to fetch the posts from the database to display them on the feed list
 const fetchPosts = async (): Promise<PostInterface[]> => {
   try {
-    const posts = await Post.find().populate('userID', 'name email').lean();
+    const posts = await Post.find().populate('userID', 'name email followers').lean();
 
     return posts;
   } catch (error) {

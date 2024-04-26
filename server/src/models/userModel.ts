@@ -1,3 +1,4 @@
+import Notification, { NotificationInterface } from './notificationModel';
 import mongoose, { Schema, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
@@ -18,6 +19,7 @@ export interface UserInterface extends Document {
     movie_links: string[];
     is_online: boolean;
     uploadedPosts: mongoose.Types.ObjectId[];
+    notifications: NotificationInterface[];
   };
   }
 
@@ -87,7 +89,8 @@ const userModelSchema: Schema = new Schema({
   uploadedPosts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post',
-  }]
+  }],
+  notifications: [{ type: Schema.Types.ObjectId, ref: 'Notification' }]
 }, {
   timestamps: true
 });
