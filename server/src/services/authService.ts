@@ -1,3 +1,4 @@
+import Notification, { NotificationInterface } from './../models/notificationModel';
 import bcrypt from "bcryptjs";
 // file holding all the logic part of the application.
 
@@ -385,6 +386,21 @@ const fetchUserPosts = async ( userID: string ): Promise<PostInterface[]> => {
   }
 }
 
+// Function to create and save notifications
+const createNotification = async (recipientID: string, message: string, type: string, postId: string) => {
+  try {
+      const notification: NotificationInterface = new Notification({
+          message: message,
+          type: type,
+          postId: postId,
+          userId: recipientID,
+      });
+      await notification.save();
+  } catch (error) {
+      throw new Error('Error creating notification');
+  }
+};
+
 
 export {
   findUserByEmailAndPassword,
@@ -405,7 +421,8 @@ export {
   updateUserUploadedPosts,
   findPostById,
   fetchPosts,
-  fetchUserPosts
+  fetchUserPosts,
+  createNotification
 };
 
 // Intel

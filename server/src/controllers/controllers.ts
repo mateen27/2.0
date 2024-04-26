@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/userModel";
 import {
   acceptFriendRequest,
+  createNotification,
   fetchFollowers,
   fetchFollowing,
   fetchFriendRequests,
@@ -467,18 +468,17 @@ const likePostsHandler = async (req: Request, res: Response) => {
 
     // checking if the user has already liked the post
     if (post.likes.includes(userIDObj)) {
-      return res.status(400).json({ message: 'You have already liked this post' });
+      post.likes = post.likes.filter(like => !like.equals(userIDObj));
+      await post.save();
+      await createNotification(post.userID.toString(), `${existingUser.name} unliked your post.`, 'unlike', postID);
+      return res.status(400).json({ message: 'Post unliked successfully' });
     }
 
     // if the user has not liked the post yet
     post.likes.push(userIDObj);
     await post.save();
-
-    // notifying the user who has uploaded the post
-    const author: any = await User.findById(post.userID);
-    
-    // console.log(typeof author);
-    // console.log(author)
+    // send like notification
+    await createNotification(post.userID.toString(), `${existingUser.name} liked your post.`, 'like', postID);
 
     res.status(200).json({ message: 'Post liked successfully' });
   } catch (error) {
