@@ -25,7 +25,7 @@ import mongoose from "mongoose";
 import Post, { PostInterface } from "../models/postModel";
 // movies data
 import * as fs from "fs";
-import { ALL_MOVIES, BollywoodMovies, NowPlayingMovies, PopularMovies, TamilMovies, TelguMovies, TopRatedMovies, UpcomingMovies } from "../app";
+import { ALL_MOVIES, BollywoodMovies, NowPlayingMovies, PopularMovies, TamilMovies, TelguMovies, TopRatedMovies, UpcomingMovies } from "../path";
 
 // logic for signing the user inside of the application
 const loginUserHandler = async (req: Request, res: Response) => {

@@ -18,18 +18,6 @@ app.use(bodyParser.json());
 // Connect to MongoDB
 connectDatabase();
 
-// base directory from the movies
-export const ALL_MOVIES = path.resolve(__dirname, './data/AllMovies.json');
-export const BollywoodMovies = path.resolve(__dirname, './data/BollywoodMovies.json');
-export const NowPlayingMovies = path.resolve(__dirname, './data/NowPlayingMovies.json');
-export const PopularMovies = path.resolve(__dirname, './data/PopularMovies.json');
-export const TamilMovies = path.resolve(__dirname, './data/TamilMovies.json');
-export const TelguMovies = path.resolve(__dirname, './data/TelguMovies.json');
-export const TopRatedMovies = path.resolve(__dirname, './data/TopRatedMovies.json');
-export const UpcomingMovies = path.resolve(__dirname, './data/UpcomingMovies.json');
-
- 
-
 // routes
 // sample route for checking the application is working or not!
 app.get('/', (req: Request, res: Response) => {
