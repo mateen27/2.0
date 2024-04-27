@@ -23,6 +23,9 @@ import {
 } from "../services/authService";
 import mongoose from "mongoose";
 import Post, { PostInterface } from "../models/postModel";
+// movies data
+import * as fs from "fs";
+import { ALL_MOVIES, BollywoodMovies, NowPlayingMovies, PopularMovies, TamilMovies, TelguMovies, TopRatedMovies, UpcomingMovies } from "../app";
 
 // logic for signing the user inside of the application
 const loginUserHandler = async (req: Request, res: Response) => {
@@ -567,6 +570,192 @@ const deleteCommentPostHandler = async (req: Request, res: Response) => {
   }
 }
 
+// endpoint for sending movies responses
+const getAllMoviesHandler = async (req: Request, res: Response) => {
+  try {
+    // read the JSON data from the file
+    fs.readFile(ALL_MOVIES, 'utf8', (err, data) =>{
+      if(err) {
+        console.log('error reading the file', err);
+        res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      // parse the json data
+      const parseData = JSON.parse(data);
+      // console.log(data);
+      
+
+      // send the data to the client
+      res.status(200).json(parseData);
+    })
+  } catch (error) {
+    console.log('error fetching the movies', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+const getBollywoodMoviesHandler = async (req: Request, res: Response) => {
+  try {
+    // read the JSON data from the file
+    fs.readFile(BollywoodMovies, 'utf8', (err, data) =>{
+      if(err) {
+        console.log('error reading the file', err);
+        res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      // parse the json data
+      const parseData = JSON.parse(data);
+      // console.log(data);
+      
+
+      // send the data to the client
+      res.status(200).json(parseData);
+    })
+  } catch (error) {
+    console.log('error fetching the movies', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+const getPopularMoviesHandler = async (req: Request, res: Response) => {
+  try {
+    // read the JSON data from the file
+    fs.readFile(PopularMovies, 'utf8', (err, data) =>{
+      if(err) {
+        console.log('error reading the file', err);
+        res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      // parse the json data
+      const parseData = JSON.parse(data);
+      // console.log(data);
+      
+
+      // send the data to the client
+      res.status(200).json(parseData);
+    })
+  } catch (error) {
+    console.log('error fetching the movies', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+const getNowPlayingMoviesHandler = async (req: Request, res: Response) => {
+  try {
+    // read the JSON data from the file
+    fs.readFile(NowPlayingMovies, 'utf8', (err, data) =>{
+      if(err) {
+        console.log('error reading the file', err);
+        res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      // parse the json data
+      const parseData = JSON.parse(data);
+      // console.log(data);
+      
+
+      // send the data to the client
+      res.status(200).json(parseData);
+    })
+  } catch (error) {
+    console.log('error fetching the movies', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+const getTamilMoviesHandler = async (req: Request, res: Response) => {
+  try {
+    // read the JSON data from the file
+    fs.readFile(TamilMovies, 'utf8', (err, data) =>{
+      if(err) {
+        console.log('error reading the file', err);
+        res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      // parse the json data
+      const parseData = JSON.parse(data);
+      // console.log(data);
+      
+
+      // send the data to the client
+      res.status(200).json(parseData);
+    })
+  } catch (error) {
+    console.log('error fetching the movies', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+const getTelguMoviesHandler = async (req: Request, res: Response) => {
+  try {
+    // read the JSON data from the file
+    fs.readFile(TelguMovies, 'utf8', (err, data) =>{
+      if(err) {
+        console.log('error reading the file', err);
+        res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      // parse the json data
+      const parseData = JSON.parse(data);
+      // console.log(data);
+      
+
+      // send the data to the client
+      res.status(200).json(parseData);
+    })
+  } catch (error) {
+    console.log('error fetching the movies', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+const getTopRatedMoviesHandler = async (req: Request, res: Response) => {
+  try {
+    // read the JSON data from the file
+    fs.readFile(TopRatedMovies, 'utf8', (err, data) =>{
+      if(err) {
+        console.log('error reading the file', err);
+        res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      // parse the json data
+      const parseData = JSON.parse(data);
+      // console.log(data);
+      
+
+      // send the data to the client
+      res.status(200).json(parseData);
+    })
+  } catch (error) {
+    console.log('error fetching the movies', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+const getUpcomingMoviesHandler = async (req: Request, res: Response) => {
+  try {
+    // read the JSON data from the file
+    fs.readFile(UpcomingMovies, 'utf8', (err, data) =>{
+      if(err) {
+        console.log('error reading the file', err);
+        res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      // parse the json data
+      const parseData = JSON.parse(data);
+      // console.log(data);
+      
+
+      // send the data to the client
+      res.status(200).json(parseData);
+    })
+  } catch (error) {
+    console.log('error fetching the movies', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+
+
 export {
   loginUserHandler,
   registerUserHandler,
@@ -587,5 +776,13 @@ export {
   fetchPostsHandler,
   likePostsHandler,
   commentPostHandler,
-  deleteCommentPostHandler
+  deleteCommentPostHandler,
+  getAllMoviesHandler,
+  getBollywoodMoviesHandler,
+  getPopularMoviesHandler,
+  getNowPlayingMoviesHandler,
+  getTamilMoviesHandler,
+  getTelguMoviesHandler,
+  getTopRatedMoviesHandler,
+  getUpcomingMoviesHandler
 };
