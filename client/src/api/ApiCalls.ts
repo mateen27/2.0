@@ -1,17 +1,19 @@
 export const API_KEY: string = '80e31e40521ab1451de8ed133fc75446'
 
+export const AllMovies: string = 'http://localhost:3001/api/user/all-movies/'
+
 export const baseImageURL = (size: string , path: string) => {
     return `https://image.tmdb.org/t/p/${size}${path}`
 }
 
 export const nowPlayingMovies: string = `
-https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`;
+http://localhost:3001/api/user/now-playing-movies/`;
 
 export const popularMovies: string = `
-https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
+http://localhost:3001/api/user/popular-movies`
 
 export const topRatedMovies: string = `
-https://api.themoviedb.org/3/movie/top_rated/?api_key=${API_KEY}`
+http://localhost:3001/api/user/topRated-movies`
 
 export const searchMovies = (keyword: string) => {
     return `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${keyword}`

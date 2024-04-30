@@ -24,6 +24,7 @@ import LoginScreen from "../../screens/AppScreens/LoginScreen";
 import Profile from "../../screens/AppScreens/Profile";
 import About from "../../screens/AppScreens/About";
 import SignUp from "../../screens/AppScreens/SignUp";
+import VerificationCode from "../../screens/AppScreens/VerificationCode";
 
 // stackNavigator
 const Stack = createNativeStackNavigator();
@@ -46,6 +47,12 @@ const AppNavigator: React.FC<{}> = () => {
         name="OnBoarding"
         component={OnBoardingScreen}
         options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Verify"
+        component={VerificationCode}
+        options={{ headerShown: false }}
+        // initialParams={{ responseData: null }}
       />
       <Stack.Screen
         name="Login"

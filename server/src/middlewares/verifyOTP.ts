@@ -3,14 +3,14 @@ import User from '../models/userModel';
 
 const verifyOTP = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { otp } = req.body;
+        const { email, otp } = req.body;
 
         // Find the user by ID and check if OTP matches
-        const user = await User.findOne({ _id: req.params.userID, otp });
+        const user = await User.findOne({ email, otp });
 
         if (user) {
             // OTP matches, update user's verification status and remove OTP from user document
-            await User.findByIdAndUpdate(req.params.userID, { verified: true, otp: null });
+            await User.findByIdAndUpdate(email, { verified: true, otp: null });
 
             // Proceed to the next middleware or route handler
             return next();

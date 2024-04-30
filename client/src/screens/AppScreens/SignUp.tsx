@@ -20,6 +20,9 @@ import { StatusBar } from "expo-status-bar";
 // import Button from '../components/Button';
 import React, { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
+// redux-toolkit
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from "../../redux/store/slices/UserSlice"; 
 
 import {
   responsiveScreenHeight,
@@ -37,6 +40,10 @@ const SignUp = ({ navigation }: any) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // redux
+  const dispatch = useDispatch();
+  const userData = useSelector((state) => state.user.data);
 
   //   function handling the registration
   // function handling the registration
@@ -57,21 +64,23 @@ const SignUp = ({ navigation }: any) => {
 
         // Send a POST request to register the user
         const response = await axios.post(
-          "http://192.168.29.181:8080/api/user/",
+          "http://192.168.29.181:3001/api/user/register",
           user
         );
 
-        if (response.status === 201) {
+        if (response.status === 201 || response.status === 200 ) {
           console.log(response);
+          // console.log('response data',response.data);
+          dispatch(setUser(response.data._id))
           Alert.alert("Registration successful", "You have been registered!");
-          setName("");
-          setEmail("");
-          setMobile("");
-          setPassword("");
-          setSelectedImage(null);
+          // setName("");
+          // setEmail("");
+          // setMobile("");
+          // setPassword("");
+          // setSelectedImage(null);
 
           // navigating to the LoginScreen once the user is registered
-          navigation.navigate("Login");
+          navigation.navigate("Verify"); 
         } else {
           console.log(
             "Registration failed. Response status: ",
@@ -270,6 +279,7 @@ const SignUp = ({ navigation }: any) => {
               }}
             >
               <TextInput
+                editable = { false }
                 placeholder="+91"
                 placeholderTextColor={COLORS.WhiteRGBA50}
                 keyboardType="numeric"

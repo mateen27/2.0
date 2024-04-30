@@ -8,7 +8,6 @@ const Header = () => {
     }, [])
 
 
-  return (
     <View>
       <Text>Header</Text>
       <Image src={images} style = { styles.image } />

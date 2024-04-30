@@ -417,11 +417,18 @@ const sendMail = async (email: string, otp: string) => {
       from: "showstarter@gmail.com",
       to: email,
       subject: "OTP Verification",
-      text: `Thank you for registering with our application!
-      Your verification code is: ${otp}. 
-      Please use this code to complete your registration process. 
-      If you have any questions, feel free to reach out to our support team. 
-      Welcome aboard!`,
+      html: `
+      <html>
+        <body style="font-family: Arial, sans-serif;">
+          <h1>Welcome to ShowStarter!</h1>
+          <p>Thank you for registering with our application!</p>
+          <p>Your verification code is: <strong>${otp}</strong>.</p>
+          <p>Please use this code to complete your registration process.</p>
+          <p>If you have any questions, feel free to reach out to our support team.</p>
+          <p>Welcome aboard!</p>
+        </body>
+      </html>
+    `
     };
 
     await transporter.sendMail(mailOptions);

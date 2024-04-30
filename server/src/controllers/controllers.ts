@@ -100,7 +100,7 @@ const registerUserHandler = async (req: Request, res: Response) => {
     // Calling a function in the service to handle database operations!
     const user = await isAlreadyRegistered(email);
 
-    res.status(200).json({ user });
+    res.status(200).json(user);
   } catch (error) {
     console.error("Error Registering the user!", error);
     res.status(500).json({ message: "Internal Server Error" });
