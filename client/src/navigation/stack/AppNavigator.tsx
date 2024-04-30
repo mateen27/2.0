@@ -38,7 +38,7 @@ const AppNavigator: React.FC<{}> = () => {
 
   return (
     <Stack.Navigator>
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Splash"
         component={SplashScreen}
         options={{ headerShown: false }}
@@ -47,7 +47,7 @@ const AppNavigator: React.FC<{}> = () => {
         name="OnBoarding"
         component={OnBoardingScreen}
         options={{ headerShown: false }}
-      />
+      /> */}
       <Stack.Screen
         name="Verify"
         component={VerificationCode}

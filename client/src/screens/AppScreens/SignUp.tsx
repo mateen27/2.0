@@ -43,7 +43,6 @@ const SignUp = ({ navigation }: any) => {
 
   // redux
   const dispatch = useDispatch();
-  const userData = useSelector((state) => state.user.data);
 
   //   function handling the registration
   // function handling the registration
