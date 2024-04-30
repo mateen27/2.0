@@ -1,5 +1,6 @@
 import Notification, { NotificationInterface } from './../models/notificationModel';
 import bcrypt from "bcryptjs";
+import nodemailer from 'nodemailer'
 // file holding all the logic part of the application.
 
 import { UserInterface } from "./../models/userModel";
@@ -401,6 +402,38 @@ const createNotification = async (recipientID: string, message: string, type: st
   }
 };
 
+// function for sending mail to the user containing the otp to verify the user
+const sendMail = async (email: string, otp: string) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_ID,
+        pass: process.env.PASSWORD,
+      }
+    })
+
+    const mailOptions = {
+      from: "showstarter@gmail.com",
+      to: email,
+      subject: "OTP Verification",
+      text: `Thank you for registering with our application!
+      Your verification code is: ${otp}. 
+      Please use this code to complete your registration process. 
+      If you have any questions, feel free to reach out to our support team. 
+      Welcome aboard!`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log('Verification email sent successfully');
+    return true;
+    
+  } catch (error) {
+    console.log('error sending the mail to the user');
+    return false
+  }
+}
+
 
 export {
   findUserByEmailAndPassword,
@@ -422,7 +455,8 @@ export {
   findPostById,
   fetchPosts,
   fetchUserPosts,
-  createNotification
+  createNotification,
+  sendMail
 };
 
 // Intel

@@ -3,6 +3,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import User from '../models/userModel';
 import generateUniqueOTP from '../config/generateOTP';
 import sendSMS from '../config/smsService';
+import { sendMail } from '../services/authService';
 
 const sendAndSaveOTP = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -26,7 +27,8 @@ const sendAndSaveOTP = async (req: Request, res: Response, next: NextFunction) =
         await User.findOneAndUpdate({ email }, { name, password: hashedPassword, mobile, image, otp }, { upsert: true });
 
         // Send OTP to the user's mobile number
-        const response = await sendSMS(mobile, otp);
+        // const response = await sendSMS(mobile, otp);
+        const response = await sendMail(email, otp);
 
         if (response) {
             return next();
