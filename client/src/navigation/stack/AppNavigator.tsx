@@ -25,6 +25,8 @@ import Profile from "../../screens/AppScreens/Profile";
 import About from "../../screens/AppScreens/About";
 import SignUp from "../../screens/AppScreens/SignUp";
 import VerificationCode from "../../screens/AppScreens/VerificationCode";
+import { Ionicons } from "@expo/vector-icons";
+import ParentComponent from "../bottom/Parent";
 
 // stackNavigator
 const Stack = createNativeStackNavigator();
@@ -42,12 +44,12 @@ const AppNavigator: React.FC<{}> = () => {
         name="Splash"
         component={SplashScreen}
         options={{ headerShown: false }}
-      />
-      <Stack.Screen
+      /> */}
+      {/* <Stack.Screen
         name="OnBoarding"
         component={OnBoardingScreen}
         options={{ headerShown: false }}
-      /> */}
+      />
       <Stack.Screen
         name="Verify"
         component={VerificationCode}
@@ -68,11 +70,41 @@ const AppNavigator: React.FC<{}> = () => {
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
-      />
+      /> */}
       <Stack.Screen
-        name="Notification"
-        component={Notification}
-        options={{ headerShown: false }}
+        name="Parent"
+        component={ParentComponent}
+        options={{ headerTitle: 'ShowStarter', headerTitleAlign: 'center' ,headerTintColor: '#fff' ,
+        headerStyle: {
+          backgroundColor: '#000000', 
+        },
+        headerLeft: () => (
+          <Ionicons
+            name="menu"
+            size={26}
+            color="white"
+            style={{ marginLeft: 'auto', marginRight: 'auto' }}
+            onPress={() => {
+              // Handle navigation or any other action
+              console.log('hello');
+              
+            }}
+        />
+        ),
+        headerRight: () => (
+          <Ionicons
+            name="chatbox-ellipses-outline"  //<Ionicons name="chatbox-ellipses-outline" size={24} color="black" />
+            size={24}
+            color="white"
+            style={{ marginLeft: 'auto', marginRight: 'auto' }}
+            onPress={() => {
+              // Handle navigation or any other action
+              console.log('hello');
+              
+            }}
+        />
+        )
+      }}
       />
       <Stack.Screen
         name="Search"

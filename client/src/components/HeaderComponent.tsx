@@ -6,6 +6,7 @@ import { Entypo } from '@expo/vector-icons';
 import Menu from '../../images/menuu.png'
 // importing notification icon
 import { Ionicons } from '@expo/vector-icons';
+import { FontAwesome6 } from '@expo/vector-icons';
 // responsive font imports
 import {
     responsiveScreenHeight,
@@ -14,7 +15,7 @@ import {
   } from "react-native-responsive-dimensions";
 
 //   importing a screen
-// import Notification from '../screens/AppScreens/Notification';
+import Notification from '../screens/AppScreens/Notification';
 
 const HeaderComponent: React.FC<{navigation: any , props: any}> = ({ navigation , props }) => {
   return (
@@ -33,7 +34,9 @@ const HeaderComponent: React.FC<{navigation: any , props: any}> = ({ navigation 
       {/* Notification Icon */} 
       <TouchableOpacity
       onPress={() => navigation.navigate('Notification')}
-      ><Ionicons name="chatbox-outline" size={25} color="#f5f6fa" /></TouchableOpacity>
+      ><Ionicons name="person" size={23} color="#f5f6fa" />
+      
+      </TouchableOpacity>
     </SafeAreaView>
   )
 }

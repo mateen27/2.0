@@ -1,16 +1,21 @@
-import { Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState, useRef } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import { responsiveScreenWidth } from 'react-native-responsive-dimensions';
+import axios from 'axios';
+import { clearUser } from '../../redux/store/slices/UserSlice';
 
-const VerificationCode = () => {
+const VerificationCode = ({ navigation }: any) => {
     // Access user data from the Redux store
-    const userData = useSelector((state: RootState) => state.user.data);
-    console.log('userData of the user', userData);
+    const userID = useSelector((state: RootState) => state.user.data);
+    console.log('userData of the user', userID);
 
     const [otp, setOtp] = useState(['', '', '', '', '', '']);
     const refs = useRef<Array<TextInput | null>>([null, null, null, null, null, null]);
+
+    // Redux dispatch function
+    const dispatch = useDispatch();
 
     const handleChangeText = (index: number, value: string) => {
         const newOtp = [...otp];
@@ -26,11 +31,23 @@ const VerificationCode = () => {
     }
 };
 
-const handleOTPVerification = async (userData: string, otp: string) => {
+const handleOTPVerification = async (userData: string, otp: any) => {
     try {
         // Combining the OTP array into a single string
-        const combinedOTP = otp.join('');
-        console.log('otp', combinedOTP);
+        const combinedOTP: string = otp.join('');
+        // console.log('otp', combinedOTP);
+
+        // sending the data to the server
+        const response = await axios.post(`http://192.168.29.181:3001/api/user/verify/${userID}`, { otp: combinedOTP });
+
+        if ( response ) {
+            console.log('response', response);
+            Alert.alert('Success', 'OTP Verified Successfully');
+            // Dispatch clearUser action to clear Redux store data
+            dispatch(clearUser());
+            navigation.navigate('Login');
+        }
+
     } catch (error) {
         console.log('error handling the verification of the otp', error);
         throw error;
@@ -59,7 +76,7 @@ const handleOTPVerification = async (userData: string, otp: string) => {
             </View>
 
             <View style={styles.loginButtonContainer}>
-            <TouchableOpacity onPress={() => handleOTPVerification(userData, otp)}>
+            <TouchableOpacity onPress={() => handleOTPVerification(userID, otp)}>
               <Text style={styles.loginButton}>Verify</Text>
             </TouchableOpacity>
           </View>

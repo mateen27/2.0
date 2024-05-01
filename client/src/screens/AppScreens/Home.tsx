@@ -20,7 +20,7 @@ import HeaderComponent from "../../components/HeaderComponent";
 import { COLORS, SPACING } from "../../theme/theme";
 
 // importing the images
-import Menu from "../../images/menuu.png";
+import Menu from "../../../images/menuu.png";
 
 // importing API Calls
 import {
@@ -31,19 +31,11 @@ import {
 import InputHeader from "../../components/InputHeader";
 import CategoryHeader from "../../components/CategoryHeader";
 import UpcomingMoviesCard from "../../components/UpcomingMoviesCard";
+import axios from "axios";
 
 // for the responsive UI
 const { width, height } = Dimensions.get("window");
 
-// fetching the movies data
-const getUpcomingMovies = async () => {
-  try {
-    return UpcomingMoviesData;
-  } catch (err) {
-    console.error(`Error while getting upcoming movies: ${err}`);
-    throw err;  // Rethrow the error for further handling if needed
-  }
-};
 
 const Home: React.FC<{ navigation: any , route: any }> = ({ navigation , route }) => {
 
@@ -73,10 +65,11 @@ const Home: React.FC<{ navigation: any , route: any }> = ({ navigation , route }
   useEffect(() => {
     const fetchUpcomingMovies = async () => {
       try {
-        const nowPlayingMovies = await getUpcomingMovies();
+        const nowPlayingMovies = await axios.get('http://192.168.29.181:3001/api/user/all-movies/');
+        console.log('now playing movies', nowPlayingMovies)
         setUpcomingMovies([
           { id: "dummy1" },
-          ...nowPlayingMovies.results,
+          ...nowPlayingMovies.data.results,
           { id: "dummy2" },
         ]);
       } catch (error) {
@@ -148,6 +141,8 @@ const Home: React.FC<{ navigation: any , route: any }> = ({ navigation , route }
         decelerationRate={0}
         contentContainerStyle={styles.containerGap36}
         renderItem={({ item, index }) => {
+          // console.log('item', item.original_title);
+          
           if (!item.original_title) {
             return (
               <View
@@ -161,6 +156,8 @@ const Home: React.FC<{ navigation: any , route: any }> = ({ navigation , route }
             <UpcomingMoviesCard
               shoudlMarginatedAtEnd={true}
               cardFunction={() => {
+                console.log('item id ', item.id);
+                
                 navigation.push("UpcomingMovieDetails", { movieid: item.id });
               }}
               cardWidth={width * 0.7}

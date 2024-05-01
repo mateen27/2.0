@@ -10,7 +10,7 @@ router.post('/login', loginUserHandler);                                        
 // Endpoint for registering tge user inside of the application
 router.post('/register', sendAndSaveOTP,  registerUserHandler);                 // working API 
 // endpoint for verifing the otp of the user in the application
-router.post(`/verify`, verifyOTP, verifiedUser);                        // working API 
+router.post(`/verify/:userID`, verifyOTP, verifiedUser);                        // working API 
 // endpoint for fetching all the users in the application except the logged in user
 router.get('/fetchAllUsers/:userID', fetchAllUsersHandler);                     // working API
 // endpoint for sending friend-requests to the person
