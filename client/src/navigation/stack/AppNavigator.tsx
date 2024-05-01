@@ -27,6 +27,7 @@ import SignUp from "../../screens/AppScreens/SignUp";
 import VerificationCode from "../../screens/AppScreens/VerificationCode";
 import { Ionicons } from "@expo/vector-icons";
 import ParentComponent from "../bottom/Parent";
+import Home from "../../screens/SocialMedia/Home";
 
 // stackNavigator
 const Stack = createNativeStackNavigator();
@@ -65,46 +66,59 @@ const AppNavigator: React.FC<{}> = () => {
         name="SignUp"
         component={SignUp}
         options={{ headerShown: false }}
-      />
+      />*/}
       <Stack.Screen
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
-      /> */}
+      />
       <Stack.Screen
         name="Parent"
         component={ParentComponent}
-        options={{ headerTitle: 'ShowStarter', headerTitleAlign: 'center' ,headerTintColor: '#fff' ,
-        headerStyle: {
-          backgroundColor: '#000000', 
-        },
-        headerLeft: () => (
-          <Ionicons
-            name="menu"
-            size={26}
-            color="white"
-            style={{ marginLeft: 'auto', marginRight: 'auto' }}
-            onPress={() => {
-              // Handle navigation or any other action
-              console.log('hello');
-              
-            }}
-        />
-        ),
-        headerRight: () => (
-          <Ionicons
-            name="chatbox-ellipses-outline"  //<Ionicons name="chatbox-ellipses-outline" size={24} color="black" />
-            size={24}
-            color="white"
-            style={{ marginLeft: 'auto', marginRight: 'auto' }}
-            onPress={() => {
-              // Handle navigation or any other action
-              console.log('hello');
-              
-            }}
-        />
-        )
+        options={{
+          headerTitle: "ShowStarter",
+          headerTitleAlign: "center",
+          headerTintColor: "#fff",
+          headerStyle: {
+            backgroundColor: "#000000",
+          },
+          headerLeft: () => (
+            <Ionicons
+              name="arrow-back"
+              size={26}
+              color="white"
+              style={{ marginLeft: "auto", marginRight: "auto" }}
+              onPress={() => {
+                // Handle navigation or any other action
+                navigation.goBack();
+              }}
+            />
+          ),
+          headerRight: () => (
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <Ionicons
+      name="person-add-outline"
+      size={23}
+      color="white"
+      style={{ marginRight: 10 }}
+      onPress={() => {
+        // Handle friend request action
+        console.log("Friend request");
       }}
+    />
+              <Ionicons
+                name="chatbox-ellipses-outline" //<Ionicons name="chatbox-ellipses-outline" size={24} color="black" />
+                size={24}
+                color="white"
+                style={{ marginLeft: "auto", marginRight: "auto" }}
+                onPress={() => {
+                  // Handle navigation or any other action
+                  console.log("hello");
+                }}
+              />
+            </View>
+          ),
+        }}
       />
       <Stack.Screen
         name="Search"
@@ -170,6 +184,12 @@ const AppNavigator: React.FC<{}> = () => {
       <Stack.Screen
         name="About"
         component={About}
+        options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="HomeSocial"
+        component={Home}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

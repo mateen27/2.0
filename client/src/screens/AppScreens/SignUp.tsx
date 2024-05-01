@@ -58,7 +58,7 @@ const SignUp = ({ navigation }: any) => {
           email: email,
           mobile: mobile ,
           password: password,
-          pic: cloudinaryUrl,
+          image: cloudinaryUrl,
         };
 
         // Send a POST request to register the user

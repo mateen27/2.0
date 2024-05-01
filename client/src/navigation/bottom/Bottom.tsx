@@ -42,7 +42,7 @@ const Bottom = () => {
           tabBarInactiveTintColor: 'gray',
           tabBarStyle: {
             backgroundColor: 'black',
-          },
+          }
 
         })}
       >
