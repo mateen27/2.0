@@ -27,8 +27,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as LocalAuthentication from "expo-local-authentication";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../redux/store/slices/UserSlice";
+import { useNavigation } from "@react-navigation/native";
+import JWT from "expo-jwt";
+import { secretKey } from "../../private/secret";
 
-const LoginScreen = ({ navigation, route }: any) => {
+const LoginScreen = () => {
   // state management
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,10 +40,35 @@ const LoginScreen = ({ navigation, route }: any) => {
 
   // redux
   const dispatch = useDispatch();
+  
+  // navigation 
+  const navigation  = useNavigation();
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
+  // //   checking the login status
+  // useEffect(() => {
+  //   const checkLoginStatus = async () => {
+  //     try {
+  //       // accessing the token from async storage!
+  //       const token = await AsyncStorage.getItem("authToken");
+
+  //       // if token found
+  //       if (token) {
+  //         navigation.navigate("Home");
+  //       } else {
+  //         // token not found navigate to the Login Screen itself!
+  //       }
+  //     } catch (error) {
+  //       console.log("error checking the login status", error);
+  //     }
+  //   };
+
+  //   // calling the function
+  //   checkLoginStatus();
+  // }, []);
 
   // for checking if the device supports biometric or not!
   useEffect(() => {
@@ -137,10 +165,18 @@ const LoginScreen = ({ navigation, route }: any) => {
         AsyncStorage.setItem("authToken", token);
 
         const userID = response.data.user._id;
-        console.log("response json: ", userID);
+        console.log("response userID: ", userID);
+        const encodeUserID = JWT.encode({ userID } , secretKey);
+        AsyncStorage.setItem('userID', encodeUserID);
+        // encoding the userID
+        // const encodeUserID = JWT.encode({ userID } , secretKey);
+        // console.log(encodeUserID);
+        
 
-        // storing the userID in store of redux
-        dispatch(setUser(userID));
+        // // storing the userID in Async-Storage
+        // AsyncStorage.setItem("userID", encodeUserID);
+        // dispatch(setUser(userID));
+
 
         const userName = response.data.user.name;
         console.log('userName', userName);

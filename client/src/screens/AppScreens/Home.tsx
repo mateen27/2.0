@@ -66,7 +66,7 @@ const Home: React.FC<{ navigation: any , route: any }> = ({ navigation , route }
     const fetchUpcomingMovies = async () => {
       try {
         const nowPlayingMovies = await axios.get('http://192.168.29.181:3001/api/user/all-movies/');
-        console.log('now playing movies', nowPlayingMovies)
+        // console.log('now playing movies', nowPlayingMovies)
         setUpcomingMovies([
           { id: "dummy1" },
           ...nowPlayingMovies.data.results,

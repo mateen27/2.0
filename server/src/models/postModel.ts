@@ -38,7 +38,7 @@ const postSchema: Schema = new Schema({
     },
     contentUrl: {
         type: String,
-        required: true
+        // required: true
     },
     contentDescription: {
         type: String,

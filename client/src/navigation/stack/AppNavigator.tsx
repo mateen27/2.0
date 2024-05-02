@@ -41,12 +41,12 @@ const AppNavigator: React.FC<{}> = () => {
 
   return (
     <Stack.Navigator>
-      {/* <Stack.Screen
+      <Stack.Screen
         name="Splash"
         component={SplashScreen}
         options={{ headerShown: false }}
-      /> */}
-      {/* <Stack.Screen
+      />
+     <Stack.Screen
         name="OnBoarding"
         component={OnBoardingScreen}
         options={{ headerShown: false }}
@@ -66,7 +66,7 @@ const AppNavigator: React.FC<{}> = () => {
         name="SignUp"
         component={SignUp}
         options={{ headerShown: false }}
-      />*/}
+      />
       <Stack.Screen
         name="Home"
         component={HomeScreen}
@@ -75,50 +75,51 @@ const AppNavigator: React.FC<{}> = () => {
       <Stack.Screen
         name="Parent"
         component={ParentComponent}
-        options={{
-          headerTitle: "ShowStarter",
-          headerTitleAlign: "center",
-          headerTintColor: "#fff",
-          headerStyle: {
-            backgroundColor: "#000000",
-          },
-          headerLeft: () => (
-            <Ionicons
-              name="arrow-back"
-              size={26}
-              color="white"
-              style={{ marginLeft: "auto", marginRight: "auto" }}
-              onPress={() => {
-                // Handle navigation or any other action
-                navigation.goBack();
-              }}
-            />
-          ),
-          headerRight: () => (
-            <View style={{ flexDirection: 'row', gap: 12 }}>
-              <Ionicons
-      name="person-add-outline"
-      size={23}
-      color="white"
-      style={{ marginRight: 10 }}
-      onPress={() => {
-        // Handle friend request action
-        console.log("Friend request");
-      }}
-    />
-              <Ionicons
-                name="chatbox-ellipses-outline" //<Ionicons name="chatbox-ellipses-outline" size={24} color="black" />
-                size={24}
-                color="white"
-                style={{ marginLeft: "auto", marginRight: "auto" }}
-                onPress={() => {
-                  // Handle navigation or any other action
-                  console.log("hello");
-                }}
-              />
-            </View>
-          ),
-        }}
+        options={{ headerShown: false }}
+    //     options={{
+    //       headerTitle: "ShowStarter",
+    //       headerTitleAlign: "center",
+    //       headerTintColor: "#fff",
+    //       headerStyle: {
+    //         backgroundColor: "#000000",
+    //       },
+    //       headerLeft: () => (
+    //         <Ionicons
+    //           name="arrow-back"
+    //           size={26}
+    //           color="white"
+    //           style={{ marginLeft: "auto", marginRight: "auto" }}
+    //           onPress={() => {
+    //             // Handle navigation or any other action
+    //             navigation.goBack();
+    //           }}
+    //         />
+    //       ),
+    //       headerRight: () => (
+    //         <View style={{ flexDirection: 'row', gap: 12 }}>
+    //           <Ionicons
+    //   name="person-add-outline"
+    //   size={23}
+    //   color="white"
+    //   style={{ marginRight: 10 }}
+    //   onPress={() => {
+    //     // Handle friend request action
+    //     console.log("Friend request");
+    //   }}
+    // />
+    //           <Ionicons
+    //             name="chatbox-ellipses-outline" //<Ionicons name="chatbox-ellipses-outline" size={24} color="black" />
+    //             size={24}
+    //             color="white"
+    //             style={{ marginLeft: "auto", marginRight: "auto" }}
+    //             onPress={() => {
+    //               // Handle navigation or any other action
+    //               console.log("hello");
+    //             }}
+    //           />
+    //         </View>
+    //       ),
+    //     }}
       />
       <Stack.Screen
         name="Search"
