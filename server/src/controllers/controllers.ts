@@ -25,7 +25,16 @@ import mongoose from "mongoose";
 import Post, { PostInterface } from "../models/postModel";
 // movies data
 import * as fs from "fs";
-import { ALL_MOVIES, BollywoodMovies, NowPlayingMovies, PopularMovies, TamilMovies, TelguMovies, TopRatedMovies, UpcomingMovies } from "../path";
+import {
+  ALL_MOVIES,
+  BollywoodMovies,
+  NowPlayingMovies,
+  PopularMovies,
+  TamilMovies,
+  TelguMovies,
+  TopRatedMovies,
+  UpcomingMovies,
+} from "../path";
 
 // logic for signing the user inside of the application
 const loginUserHandler = async (req: Request, res: Response) => {
@@ -127,7 +136,7 @@ const fetchAllUsersHandler = async (req: Request, res: Response) => {
     // Making the query in the database where _id does not include the loggedInUserId
     const users = await listAllUsersExceptLoggedIn(loggedInUser);
 
-    res.status(200).json( {users} );
+    res.status(200).json({ users });
   } catch (error) {
     console.log("Error fetching the users:", error);
     res.status(500).json({ message: "Error fetching all the users!" });
@@ -213,101 +222,102 @@ const viewFollowersHandler = async (req: Request, res: Response) => {
 };
 
 // logic for displaying all the followings of the user
-const viewFollowingsHandler = async ( req: Request, res: Response ) => {
-    try {
-        // accessing the userID
-        const { userID } = req.params;
+const viewFollowingsHandler = async (req: Request, res: Response) => {
+  try {
+    // accessing the userID
+    const { userID } = req.params;
 
-        // finding if the user the user exists or not
-        const user = await fetchFollowing(userID);
+    // finding if the user the user exists or not
+    const user = await fetchFollowing(userID);
 
-        // accesianing the following of the user
-        const following = user?.following;
+    // accesianing the following of the user
+    const following = user?.following;
 
-        // returning the response
-        res.status(200).json(following);
-    } catch (error) {
-        console.log("error fetching the followers of the user", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-}
+    // returning the response
+    res.status(200).json(following);
+  } catch (error) {
+    console.log("error fetching the followers of the user", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 // logic for displaying the followers of the specific user
-const fetchFollowersHandler = async ( req: Request, res: Response ) => {
-    try {
-        const { userID } = req.body;
+const fetchFollowersHandler = async (req: Request, res: Response) => {
+  try {
+    const { userID } = req.body;
 
-        // finding if the user exists or not 
-        const user = await fetchUserFollowersHandler(userID);
+    // finding if the user exists or not
+    const user = await fetchUserFollowersHandler(userID);
 
-        const followers = user?.followers;
+    const followers = user?.followers;
 
-        res.status(200).json(followers);
-    } catch (error) {
-        console.log("error fetching the followers of the user", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-}
+    res.status(200).json(followers);
+  } catch (error) {
+    console.log("error fetching the followers of the user", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 // logic for displaying the following of the user of the specified user
-const fetchFollowingHandler = async ( req: Request, res: Response ) => {
-    try {
-        // accessing the userID from the body
-        const { userID } = req.body;
+const fetchFollowingHandler = async (req: Request, res: Response) => {
+  try {
+    // accessing the userID from the body
+    const { userID } = req.body;
 
-        // finding if the user exists or not
-        const user = await fetchUserFollowingHandler(userID);
+    // finding if the user exists or not
+    const user = await fetchUserFollowingHandler(userID);
 
-        // accessing the following of the user
-        const following = user?.following;
+    // accessing the following of the user
+    const following = user?.following;
 
-        res.status(200).json(following);
-    } catch (error) {
-        console.log("error fetching the following of the user", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-}
+    res.status(200).json(following);
+  } catch (error) {
+    console.log("error fetching the following of the user", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 // logic for uploading the post to the server
-const uploadPostHandler = async ( req: Request, res: Response ) => {
-    try {
-        // accessing the userID from the params
-        const { userID } = req.params;
-        const { type, contentUrl, contentDescription } = req.body;
+const uploadPostHandler = async (req: Request, res: Response) => {
+  try {
+    // accessing the userID from the params
+    const { userID } = req.params;
+    const { type, contentUrl, contentDescription } = req.body;
 
-        // checking if the user exists or not
-        const existingUser = await User.findById(userID);
+    // checking if the user exists or not
+    const existingUser = await User.findById(userID);
 
-        if ( !existingUser ) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        // creating the post for the user
-        const newPost: PostInterface = new Post({
-            type,
-            contentUrl,
-            contentDescription,
-            userID,
-            likes: [],
-            comments: []
-        })
-
-        // save the post to the database
-        const savedPost = await newPost.save();
-
-        // update the user's uploadedPosts array with the new post's ID
-        await updateUserUploadedPosts(userID, savedPost);
-
-        res.status(201).json({ message: 'Post uploaded successfully', post: savedPost });
-
-    } catch (error) {
-        console.log('error uploading the post', error);
-        res.status(500).json({ message: "Internal Server Error" });
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found" });
     }
-}
+
+    // creating the post for the user
+    const newPost: PostInterface = new Post({
+      type,
+      contentUrl,
+      contentDescription,
+      userID,
+      likes: [],
+      comments: [],
+    });
+
+    // save the post to the database
+    const savedPost = await newPost.save();
+
+    // update the user's uploadedPosts array with the new post's ID
+    await updateUserUploadedPosts(userID, savedPost);
+
+    res
+      .status(201)
+      .json({ message: "Post uploaded successfully", post: savedPost });
+  } catch (error) {
+    console.log("error uploading the post", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 // endpoint for deleting the post uploaded by the user
-const deletePostHandler = async ( req: Request, res: Response ) => {
+const deletePostHandler = async (req: Request, res: Response) => {
   try {
     // accessing the userID from params and postID from the body
     const { userID } = req.params;
@@ -315,88 +325,99 @@ const deletePostHandler = async ( req: Request, res: Response ) => {
 
     // checking if the user exists or not
     const existingUser = await findUserByID(userID);
-    // user not found 
+    // user not found
     if (!existingUser) {
-      return res.status(404).json({ message: 'User not found' });
-  }
+      return res.status(404).json({ message: "User not found" });
+    }
 
-  // checking if the post exists or not
-  const post = await findPostById(postID);
+    // checking if the post exists or not
+    const post = await findPostById(postID);
 
-  // post not found
-  if ( !post ) {
-    return res.status(404).json({ message: 'Post not found' });
-  }
+    // post not found
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
-  if (!post.userID.equals(userID)) {
-    return res.status(403).json({ message: 'You are not authorized to delete this post' });
-}
+    if (!post.userID.equals(userID)) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to delete this post" });
+    }
 
-// Delete the post
-await Post.deleteOne({ _id: postID });
+    // Delete the post
+    await Post.deleteOne({ _id: postID });
 
+    // Remove the post from the user's uploadedPosts array
+    await User.findByIdAndUpdate(userID, { $pull: { uploadedPosts: postID } });
 
-// Remove the post from the user's uploadedPosts array
-await User.findByIdAndUpdate(userID, { $pull: { uploadedPosts: postID } });
-
-res.status(200).json({ message: 'Post deleted successfully' });
-
-
+    res.status(200).json({ message: "Post deleted successfully" });
   } catch (error) {
-    console.log('error deleting the post uploaded by the user', error);
+    console.log("error deleting the post uploaded by the user", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // endpoint for udating the description of the user post which he have uploaded
-const updatePostDescriptionHandler = async ( req: Request, res: Response ) => {
+const updatePostDescriptionHandler = async (req: Request, res: Response) => {
   try {
     // accessing the userID from the params and accessing the post ID and description from the body
     const { userID } = req.params;
     const { postID, description } = req.body;
-    const userIDObj = new mongoose.Types.ObjectId(userID)
+    const userIDObj = new mongoose.Types.ObjectId(userID);
 
     // checking if the post exists or not
     const post = await findPostById(postID);
-     if ( !post ) {
-       return res.status(404).json({ message: 'Post not found' });
-     }
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
 
     //  console.log('post log', post.userID);
     //  console.log('userID Object ', userIDObj);
     //  console.log('is equal or not', post.userID.equals(userIDObj));
 
-     // Verify that the user is authorized to modify the post
-     if (!post.userID.equals(userIDObj)) {
-      return res.status(403).json({ message: 'You are not authorized to modify this post' });
-  }
+    // Verify that the user is authorized to modify the post
+    if (!post.userID.equals(userIDObj)) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to modify this post" });
+    }
 
-  // Update the description of the post
-  post.contentDescription = description;
-  const updatedPost = await post.save();
+    // Update the description of the post
+    post.contentDescription = description;
+    const updatedPost = await post.save();
 
-  res.status(200).json({ message: 'Post description updated successfully', post: updatedPost })
+    res
+      .status(200)
+      .json({
+        message: "Post description updated successfully",
+        post: updatedPost,
+      });
   } catch (error) {
-    console.log('error updating the description of the user', error)
+    console.log("error updating the description of the user", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // endpoint for displaying the posts on to the feed of the application
-const postHandler = async ( req: Request, res: Response ) => {
+const postHandler = async (req: Request, res: Response) => {
   try {
     // fetching the posts fro the feed
     const posts = await fetchPosts();
 
-    return res.status(200).json({ message: 'Posts fetched successfully', post: posts });
+    return res
+      .status(200)
+      .json({ message: "Posts fetched successfully", post: posts });
   } catch (error) {
-    console.log('error fetching the posts on to the feed of the application', error);
+    console.log(
+      "error fetching the posts on to the feed of the application",
+      error
+    );
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // endpoint for fetching the posts of the logged in user
-const userPostHandler = async ( req: Request, res: Response ) => {
+const userPostHandler = async (req: Request, res: Response) => {
   try {
     // accessing the userID from the parameters
     const { userID } = req.params;
@@ -404,22 +425,26 @@ const userPostHandler = async ( req: Request, res: Response ) => {
     // checking if the user is authenticated
     const user = await findUserByID(userID);
     // user does not exist
-    if ( !user ) {
-      res.status(404).json({ message: 'User not found' });
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
     }
 
     // fetching the user's posts from the database
     const posts = await fetchUserPosts(userID);
 
-    return res.status(200).json({ message: 'Posts successfully fetched', post: posts});
+    return res
+      .status(200)
+      .json({ message: "Posts successfully fetched", post: posts });
   } catch (error) {
-    console.log('error fetching the posts of the logged in user', error);
-    res.status(500).json({ message: 'Error fetching the posts of the logged in user' });
+    console.log("error fetching the posts of the logged in user", error);
+    res
+      .status(500)
+      .json({ message: "Error fetching the posts of the logged in user" });
   }
-}
+};
 
 // endpoint for fetching the posts of the specific user
-const fetchPostsHandler = async (req: Request, res: Response ) => {
+const fetchPostsHandler = async (req: Request, res: Response) => {
   try {
     // accesing the posts of the user only when the user is following the user
     const { userID } = req.params;
@@ -430,19 +455,24 @@ const fetchPostsHandler = async (req: Request, res: Response ) => {
     const isFollowing = currentUser?.following.includes(recipientID);
 
     // when the user is not following the user
-    if ( !isFollowing ) {
-      return res.status(403).json({ message: `You are not authorized to view this user\'s posts` });
+    if (!isFollowing) {
+      return res
+        .status(403)
+        .json({ message: `You are not authorized to view this user\'s posts` });
     }
 
     // fetch the users posts
-    const post = await Post.find({ userID: recipientID }).populate('userID', 'name email');
+    const post = await Post.find({ userID: recipientID }).populate(
+      "userID",
+      "name email"
+    );
 
-    res.status(200).json({post});
+    res.status(200).json({ post });
   } catch (error) {
-    console.log('error fetching posts of the specific user', error);
+    console.log("error fetching posts of the specific user", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // endpoint for liking the post of the user and notifying the user
 const likePostsHandler = async (req: Request, res: Response) => {
@@ -459,39 +489,49 @@ const likePostsHandler = async (req: Request, res: Response) => {
     const existingUser = await User.findById(userIDObj);
     // user not found
     if (!existingUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // checking if the post exists or not
     const post = await Post.findById(postIdObj);
     // post not found
     if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
+      return res.status(404).json({ message: "Post not found" });
     }
 
     // checking if the user has already liked the post
     if (post.likes.includes(userIDObj)) {
-      post.likes = post.likes.filter(like => !like.equals(userIDObj));
+      post.likes = post.likes.filter((like) => !like.equals(userIDObj));
       await post.save();
-      await createNotification(post.userID.toString(), `${existingUser.name} unliked your post.`, 'unlike', postID);
-      return res.status(400).json({ message: 'Post unliked successfully' });
+      await createNotification(
+        post.userID.toString(),
+        `${existingUser.name} unliked your post.`,
+        "unlike",
+        postID
+      );
+      return res.status(400).json({ message: "Post unliked successfully" });
     }
 
     // if the user has not liked the post yet
     post.likes.push(userIDObj);
     await post.save();
     // send like notification
-    await createNotification(post.userID.toString(), `${existingUser.name} liked your post.`, 'like', postID);
+    await createNotification(
+      post.userID.toString(),
+      `${existingUser.name} liked your post.`,
+      "like",
+      postID
+    );
 
-    res.status(200).json({ message: 'Post liked successfully' });
+    res.status(200).json({ message: "Post liked successfully" });
   } catch (error) {
-    console.log('Error liking post:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    console.log("Error liking post:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
 // endpoint for commenting on the post of the user
-const commentPostHandler = async ( req: Request, res: Response ) => {
+const commentPostHandler = async (req: Request, res: Response) => {
   try {
     // accesing the params and body
     const { userID } = req.params;
@@ -505,14 +545,14 @@ const commentPostHandler = async ( req: Request, res: Response ) => {
     const existingUser = await User.findById(userIDObj);
     // user not found
     if (!existingUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // checking if the post exists or not
     const post = await Post.findById(postIdObj);
     // post not found
     if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
+      return res.status(404).json({ message: "Post not found" });
     }
 
     // add comments to the post if the post already exists
@@ -522,239 +562,256 @@ const commentPostHandler = async ( req: Request, res: Response ) => {
     // Notify the user who have commented to the post
     // checking which user posted the post
     const postByUser = await User.findById(post.userID);
-    if ( postByUser ) {
-      await createNotification(post.userID.toString(), `${existingUser.name} commented on your post.`, 'comment', postID);
+    if (postByUser) {
+      await createNotification(
+        post.userID.toString(),
+        `${existingUser.name} commented on your post.`,
+        "comment",
+        postID
+      );
     }
 
-    res.status(200).json({ message: 'Comment posted successfully' });
+    res.status(200).json({ message: "Comment posted successfully" });
   } catch (error) {
-    console.log('error commenting on post', error);
+    console.log("error commenting on post", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // endpoint for deleteing the post comments
 const deleteCommentPostHandler = async (req: Request, res: Response) => {
   try {
-      const { userID, postID, commentID } = req.body;
+    const { userID, postID, commentID } = req.body;
 
-      const userIDObj = new mongoose.Types.ObjectId(userID);
-      const postIDObj = new mongoose.Types.ObjectId(postID);
-      const commentIDObj = new mongoose.Types.ObjectId(commentID);
+    const userIDObj = new mongoose.Types.ObjectId(userID);
+    const postIDObj = new mongoose.Types.ObjectId(postID);
+    const commentIDObj = new mongoose.Types.ObjectId(commentID);
 
-      // Check if the user is authorized to delete the post
-      const post = await Post.findOne({ _id: postIDObj, userID: userIDObj });
+    // Check if the user is authorized to delete the post
+    const post = await Post.findOne({ _id: postIDObj, userID: userIDObj });
 
-      console.log('post log', post);
-      
+    console.log("post log", post);
 
-      // if (!post) {
-      //     return res.status(403).json({ message: 'You are not authorized to delete this post' });
-      // }
+    // if (!post) {
+    //     return res.status(403).json({ message: 'You are not authorized to delete this post' });
+    // }
 
-      // // Delete the comment from the post
-      // const updatedPost = await Post.findOneAndUpdate(
-      //     { _id: postIDObj, 'comments._id': commentIDObj },
-      //     { $pull: { comments: { _id: commentIDObj } } },
-      //     { new: true }
-      // );
+    // // Delete the comment from the post
+    // const updatedPost = await Post.findOneAndUpdate(
+    //     { _id: postIDObj, 'comments._id': commentIDObj },
+    //     { $pull: { comments: { _id: commentIDObj } } },
+    //     { new: true }
+    // );
 
-      // if (!updatedPost) {
-      //     return res.status(404).json({ message: 'Comment not found' });
-      // }
+    // if (!updatedPost) {
+    //     return res.status(404).json({ message: 'Comment not found' });
+    // }
 
-      // res.status(200).json({ message: 'Comment deleted successfully', post: updatedPost });
+    // res.status(200).json({ message: 'Comment deleted successfully', post: updatedPost });
   } catch (error) {
-      console.log('Error deleting comment:', error);
-      res.status(500).json({ message: 'Internal Server Error' });
+    console.log("Error deleting comment:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // endpoint for sending movies responses
 const getAllMoviesHandler = async (req: Request, res: Response) => {
   try {
     // read the JSON data from the file
-    fs.readFile(ALL_MOVIES, 'utf8', (err, data) =>{
-      if(err) {
-        console.log('error reading the file', err);
-        res.status(500).json({ message: 'Internal Server Error' });
+    fs.readFile(ALL_MOVIES, "utf8", (err, data) => {
+      if (err) {
+        console.log("error reading the file", err);
+        res.status(500).json({ message: "Internal Server Error" });
       }
 
       // parse the json data
       const parseData = JSON.parse(data);
       // console.log(data);
-      
 
       // send the data to the client
       res.status(200).json(parseData);
-    })
+    });
   } catch (error) {
-    console.log('error fetching the movies', error);
+    console.log("error fetching the movies", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 const getBollywoodMoviesHandler = async (req: Request, res: Response) => {
   try {
     // read the JSON data from the file
-    fs.readFile(BollywoodMovies, 'utf8', (err, data) =>{
-      if(err) {
-        console.log('error reading the file', err);
-        res.status(500).json({ message: 'Internal Server Error' });
+    fs.readFile(BollywoodMovies, "utf8", (err, data) => {
+      if (err) {
+        console.log("error reading the file", err);
+        res.status(500).json({ message: "Internal Server Error" });
       }
 
       // parse the json data
       const parseData = JSON.parse(data);
       // console.log(data);
-      
 
       // send the data to the client
       res.status(200).json(parseData);
-    })
+    });
   } catch (error) {
-    console.log('error fetching the movies', error);
+    console.log("error fetching the movies", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 const getPopularMoviesHandler = async (req: Request, res: Response) => {
   try {
     // read the JSON data from the file
-    fs.readFile(PopularMovies, 'utf8', (err, data) =>{
-      if(err) {
-        console.log('error reading the file', err);
-        res.status(500).json({ message: 'Internal Server Error' });
+    fs.readFile(PopularMovies, "utf8", (err, data) => {
+      if (err) {
+        console.log("error reading the file", err);
+        res.status(500).json({ message: "Internal Server Error" });
       }
 
       // parse the json data
       const parseData = JSON.parse(data);
       // console.log(data);
-      
 
       // send the data to the client
       res.status(200).json(parseData);
-    })
+    });
   } catch (error) {
-    console.log('error fetching the movies', error);
+    console.log("error fetching the movies", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 const getNowPlayingMoviesHandler = async (req: Request, res: Response) => {
   try {
     // read the JSON data from the file
-    fs.readFile(NowPlayingMovies, 'utf8', (err, data) =>{
-      if(err) {
-        console.log('error reading the file', err);
-        res.status(500).json({ message: 'Internal Server Error' });
+    fs.readFile(NowPlayingMovies, "utf8", (err, data) => {
+      if (err) {
+        console.log("error reading the file", err);
+        res.status(500).json({ message: "Internal Server Error" });
       }
 
       // parse the json data
       const parseData = JSON.parse(data);
       // console.log(data);
-      
 
       // send the data to the client
       res.status(200).json(parseData);
-    })
+    });
   } catch (error) {
-    console.log('error fetching the movies', error);
+    console.log("error fetching the movies", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 const getTamilMoviesHandler = async (req: Request, res: Response) => {
   try {
     // read the JSON data from the file
-    fs.readFile(TamilMovies, 'utf8', (err, data) =>{
-      if(err) {
-        console.log('error reading the file', err);
-        res.status(500).json({ message: 'Internal Server Error' });
+    fs.readFile(TamilMovies, "utf8", (err, data) => {
+      if (err) {
+        console.log("error reading the file", err);
+        res.status(500).json({ message: "Internal Server Error" });
       }
 
       // parse the json data
       const parseData = JSON.parse(data);
       // console.log(data);
-      
 
       // send the data to the client
       res.status(200).json(parseData);
-    })
+    });
   } catch (error) {
-    console.log('error fetching the movies', error);
+    console.log("error fetching the movies", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 const getTelguMoviesHandler = async (req: Request, res: Response) => {
   try {
     // read the JSON data from the file
-    fs.readFile(TelguMovies, 'utf8', (err, data) =>{
-      if(err) {
-        console.log('error reading the file', err);
-        res.status(500).json({ message: 'Internal Server Error' });
+    fs.readFile(TelguMovies, "utf8", (err, data) => {
+      if (err) {
+        console.log("error reading the file", err);
+        res.status(500).json({ message: "Internal Server Error" });
       }
 
       // parse the json data
       const parseData = JSON.parse(data);
       // console.log(data);
-      
 
       // send the data to the client
       res.status(200).json(parseData);
-    })
+    });
   } catch (error) {
-    console.log('error fetching the movies', error);
+    console.log("error fetching the movies", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 const getTopRatedMoviesHandler = async (req: Request, res: Response) => {
   try {
     // read the JSON data from the file
-    fs.readFile(TopRatedMovies, 'utf8', (err, data) =>{
-      if(err) {
-        console.log('error reading the file', err);
-        res.status(500).json({ message: 'Internal Server Error' });
+    fs.readFile(TopRatedMovies, "utf8", (err, data) => {
+      if (err) {
+        console.log("error reading the file", err);
+        res.status(500).json({ message: "Internal Server Error" });
       }
 
       // parse the json data
       const parseData = JSON.parse(data);
       // console.log(data);
-      
 
       // send the data to the client
       res.status(200).json(parseData);
-    })
+    });
   } catch (error) {
-    console.log('error fetching the movies', error);
+    console.log("error fetching the movies", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 const getUpcomingMoviesHandler = async (req: Request, res: Response) => {
   try {
     // read the JSON data from the file
-    fs.readFile(UpcomingMovies, 'utf8', (err, data) =>{
-      if(err) {
-        console.log('error reading the file', err);
-        res.status(500).json({ message: 'Internal Server Error' });
+    fs.readFile(UpcomingMovies, "utf8", (err, data) => {
+      if (err) {
+        console.log("error reading the file", err);
+        res.status(500).json({ message: "Internal Server Error" });
       }
 
       // parse the json data
       const parseData = JSON.parse(data);
       // console.log(data);
-      
 
       // send the data to the client
       res.status(200).json(parseData);
-    })
+    });
   } catch (error) {
-    console.log('error fetching the movies', error);
+    console.log("error fetching the movies", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
+// Controller function to fetch user by ID and populate email and name
+const fetchUserByID = async (req: Request, res: Response) => {
+  try {
+    // Get the user ID from request parameters
+    const { userID } = req.params;
 
+    // Find the user by ID and populate the email and name fields
+    const user = await User.findById(userID).select("email name").exec();
+
+    // Check if the user exists
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // If the user exists, return the user data
+    res.status(200).json({ user });
+  } catch (error) {
+    // Handle errors
+    console.error("Error fetching user by ID:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 export {
   loginUserHandler,
@@ -784,5 +841,6 @@ export {
   getTamilMoviesHandler,
   getTelguMoviesHandler,
   getTopRatedMoviesHandler,
-  getUpcomingMoviesHandler
+  getUpcomingMoviesHandler,
+  fetchUserByID,
 };

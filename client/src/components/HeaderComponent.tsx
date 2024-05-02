@@ -15,7 +15,7 @@ import {
   } from "react-native-responsive-dimensions";
 
 //   importing a screen
-import Notification from '../screens/AppScreens/Notification';
+import Notification from '../screens/SocialMedia/Notification';
 
 const HeaderComponent: React.FC<{navigation: any , props: any}> = ({ navigation , props }) => {
   return (

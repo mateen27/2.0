@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { acceptFriendRequestHandler, commentPostHandler, deleteCommentPostHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchPostsHandler, getAllMoviesHandler, getBollywoodMoviesHandler, getNowPlayingMoviesHandler, getPopularMoviesHandler, getTamilMoviesHandler, getTelguMoviesHandler, getTopRatedMoviesHandler, getUpcomingMoviesHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
+import { acceptFriendRequestHandler, commentPostHandler, deleteCommentPostHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchPostsHandler, fetchUserByID, getAllMoviesHandler, getBollywoodMoviesHandler, getNowPlayingMoviesHandler, getPopularMoviesHandler, getTamilMoviesHandler, getTelguMoviesHandler, getTopRatedMoviesHandler, getUpcomingMoviesHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
 import sendAndSaveOTP from '../middlewares/sendAndSaveOTP'
 import verifyOTP from '../middlewares/verifyOTP';
 
@@ -45,6 +45,8 @@ router.post('/like-posts/:userID', likePostsHandler);                           
 router.post('/comment-posts/:userID', commentPostHandler);                      // working API
 // // endpoint for uncommenting/deleting comment from the post
 // router.delete('/comment-posts', deleteCommentPostHandler);
+// endpoint for finding user by its ID
+router.get('/userByID/:userID', fetchUserByID);
 // sending movies as responses
 // sending all movies data as responses
 router.get('/all-movies', getAllMoviesHandler);

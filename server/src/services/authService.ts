@@ -463,7 +463,7 @@ export {
   fetchPosts,
   fetchUserPosts,
   createNotification,
-  sendMail
+  sendMail,
 };
 
 // Intel

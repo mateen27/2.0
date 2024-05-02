@@ -7,8 +7,8 @@ const Notification = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Notification Screen</Text>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#000' }}>
+      <Text style = {{ color : '#fff'}}>Notification Screen</Text>
     </View>
   );
 };

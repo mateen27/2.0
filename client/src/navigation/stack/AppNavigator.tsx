@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import HomeScreen from "../../screens/HomeScreen";
 import SplashScreen from "../../screens/SplashScreen/SplashScreen";
-import Notification from "../../screens/AppScreens/Notification";
+import Notification from "../../screens/SocialMedia/Notification";
 import OnBoardingScreen from "../../screens/AppScreens/OnBoardingScreen";
 import SignupUI from "../../screens/AppScreens/SignUp";
 import BottomNavigator from "../bottom/BottomNavigator";
@@ -41,7 +41,7 @@ const AppNavigator: React.FC<{}> = () => {
 
   return (
     <Stack.Navigator>
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Splash"
         component={SplashScreen}
         options={{ headerShown: false }}
@@ -71,7 +71,7 @@ const AppNavigator: React.FC<{}> = () => {
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
-      />
+      /> */}
       <Stack.Screen
         name="Parent"
         component={ParentComponent}
