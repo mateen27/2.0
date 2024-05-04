@@ -5,7 +5,11 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import connectDatabase from './config/database'
 import router from './routes/routes';
-import path from 'path';
+
+// http
+import http from 'http';
+// socket
+import { Server as SocketIOServer } from 'socket.io';
 
 dotenv.config();
 
@@ -27,6 +31,32 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/user', router);
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
+
+// making the server using http
+const server = http.createServer(app) // app instance of express
+// socket io server
+const io = new SocketIOServer(server);
+
+// socket io logics
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  socket.on('pause', () => {
+    io.emit('pause');
+  });
+
+  socket.on('resume', () => {
+    io.emit('resume');
+  });
+
+  socket.on('disconnect', () => {
+    console.log('A user disconnected');
+  });
+});
+
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`);
+// });

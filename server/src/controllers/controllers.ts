@@ -35,6 +35,9 @@ import {
   TopRatedMovies,
   UpcomingMovies,
 } from "../path";
+import RoomModel, { Movie, MovieModel, Room } from "../models/roomModel";
+// importing uuid for random ID generation
+import { v4 as uuidv4 } from 'uuid';
 
 // logic for signing the user inside of the application
 const loginUserHandler = async (req: Request, res: Response) => {
@@ -813,6 +816,79 @@ const fetchUserByID = async (req: Request, res: Response) => {
   }
 };
 
+// Endpoint for creating a room
+const createRoomHandler = async (req: Request, res: Response) => {
+  try {
+    const { userID } = req.params;
+    const { movieID, movieName, movieLink } = req.body; // Destructure movie details from request body
+
+    // Find all active rooms created by the user
+    const activeRooms = await RoomModel.find({ hostUserId: userID, status: 'active' });
+
+    // Set status of all active rooms except the current one to 'ended'
+    await Promise.all(activeRooms.map(async (room) => {
+      if (room.roomID !== req.body.roomID) {
+        room.status = 'ended';
+        await room.save();
+      }
+    }));
+
+    // convert the string userID to mongoose ObjectID
+    const userId = new mongoose.Types.ObjectId(userID);
+
+    // Create new room
+    const roomId = uuidv4(); // Generate a random unique roomId
+    const movieDetails: Movie = new MovieModel({ movieID, movieName, movieLink });
+    const roomData = {
+      roomID: roomId,
+      hostUserId: userId,
+      movieDetails: [movieDetails], // Assuming movieDetails is a single Movie object
+      status: 'active', // Default status
+      createdAt: new Date(),
+      usersJoined: [], // Initialize users joined array
+      users: [], // Initialize users array
+    };
+
+    const room = await RoomModel.create(roomData);
+    res.status(201).json({ room, roomId }); // Send roomId in the response
+  } catch (error) {
+    console.log('Error creating room:', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+
+// endpoint for joining the room
+const joinRoomHandler = async ( req: Request, res: Response ) => {
+  try {
+    const { userID } = req.params;
+    const { roomID } = req.body;
+
+    // Find the room by ID
+    const room = await RoomModel.findOne({ roomID });
+    if (!room) {
+      return res.status(404).json({ error: 'Room not found' });
+    }
+
+    // convert the string userID to mongooseObjectID
+    const userId = new mongoose.Types.ObjectId(userID);
+    // Check if the user is already in the room
+    if (room.users.includes(userId)) {
+      return res.status(400).json({ error: 'User already in the room' });
+    }
+
+    // Add the user to the room
+    room.users.push(userId);
+    room.usersJoined.push({ userId, joinedAt: new Date() });
+    await room.save();
+
+    res.status(200).json(room);
+  } catch (error) {
+    console.log('error joining the room', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 export {
   loginUserHandler,
   registerUserHandler,
@@ -843,4 +919,6 @@ export {
   getTopRatedMoviesHandler,
   getUpcomingMoviesHandler,
   fetchUserByID,
+  createRoomHandler,
+  joinRoomHandler
 };
