@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import User from "../models/userModel";
+import User, { UserInterface } from "../models/userModel";
 import {
   acceptFriendRequest,
   createNotification,
+  createNotificationn,
   fetchFollowers,
   fetchFollowing,
   fetchFriendRequests,
@@ -21,7 +22,7 @@ import {
   updateSentFriendRequests,
   updateUserUploadedPosts,
 } from "../services/authService";
-import mongoose from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
 import Post, { PostInterface } from "../models/postModel";
 // movies data
 import * as fs from "fs";
@@ -197,6 +198,16 @@ const acceptFriendRequestHandler = async (req: Request, res: Response) => {
 
     // redirecting to the services file
     await acceptFriendRequest(userID, recepientID);
+
+    const existingUser = await User.findById(userID);
+  if (existingUser) {
+    await createNotificationn(
+      recepientID,
+      `Your friend request has been accepted by ${existingUser.name}.`,
+      "friend_request_accepted",
+      '' // Empty string as placeholder for postId
+    );
+  }
 
     // send the reponse back to the client
     res.status(200).json({ success: true, message: "Friend request accepted" });
@@ -889,6 +900,28 @@ const joinRoomHandler = async ( req: Request, res: Response ) => {
   }
 }
 
+// endopoint for searching the user
+const searchUserHandler = async ( req:Request, res:Response ) => {
+  try {
+
+    const {keyword} = req.body
+
+    // Ensure that keyword is a string
+    if (typeof keyword !== 'string') {
+      throw new Error('Keyword must be a string');
+  }
+
+  // Search users whose name contains the keyword (case-insensitive)
+  const users = await User.find({ name: { $regex: new RegExp(keyword, 'i') } } as FilterQuery<UserInterface>);
+
+  // Return the search results
+  res.json({ success: true, users: users });
+  } catch (error) {
+    console.log('error searching the user', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
 export {
   loginUserHandler,
   registerUserHandler,
@@ -920,5 +953,6 @@ export {
   getUpcomingMoviesHandler,
   fetchUserByID,
   createRoomHandler,
-  joinRoomHandler
+  joinRoomHandler,
+  searchUserHandler
 };

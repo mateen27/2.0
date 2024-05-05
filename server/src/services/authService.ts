@@ -144,22 +144,31 @@ const listAllUsersExceptLoggedIn = async (
   userID: string
 ): Promise<Object | undefined> => {
   try {
+    // Find the logged-in user
+    const loggedInUser = await User.findById(userID);
+
+    if (!loggedInUser) {
+      throw new Error("Logged-in user not found");
+    }
+
+    // Get IDs of users in friend requests, sent friend requests, following, and followers
+    const friendRequestIDs = loggedInUser.friendRequests ?? [];
+    const sentFriendRequestIDs = loggedInUser.sentFriendRequests ?? [];
+    const followingIDs = loggedInUser.following ?? [];
+    const followerIDs = loggedInUser.followers ?? [];
+
+    // Combine all IDs to exclude from the query
+    const excludedUserIDs = [
+      ...friendRequestIDs,
+      ...sentFriendRequestIDs,
+      ...followingIDs,
+      ...followerIDs,
+      userID, // Exclude the logged-in user's ID
+    ];
+
+    // Find users who are not the logged-in user and not in any of the lists mentioned above
     const users = await User.find({
-      _id: { $ne: userID },
-      friendRequests: {
-        $not: {
-          $elemMatch: {
-            userID: userID,
-          },
-        },
-      },
-      sentFriendRequests: {
-        $not: {
-          $elemMatch: {
-            userID: userID,
-          },
-        },
-      },
+      _id: { $nin: excludedUserIDs }
     });
 
     return users;
@@ -168,7 +177,6 @@ const listAllUsersExceptLoggedIn = async (
     throw new Error("Error fetching users");
   }
 };
-
 // function to set sender's sent friendRequest with recepient id
 const updateSentFriendRequests = async (
   currentUserID: string,
@@ -210,11 +218,11 @@ const updateFriendRequests = async (
 // function for fetching the friend requests of the user
 const fetchFriendRequests = async (
   currentUserID: string
-): Promise<{ _id: mongoose.Types.ObjectId, name: string, email: string }[]> => {
+): Promise<{ _id: mongoose.Types.ObjectId, name: string, email: string, image: string }[]> => {
   try {
     const user = await User.findById(currentUserID).populate({
       path: "friendRequests",
-      select: "name email",
+      select: "name email image",
       model: "User"
     }).lean<UserInterface>();
     if (!user) {
@@ -223,7 +231,8 @@ const fetchFriendRequests = async (
     return user.friendRequests.map((friend: any) => ({
       _id: friend._id,
       name: friend.name,
-      email: friend.email
+      email: friend.email,
+      image: friend.image,
     }));
   } catch (error) {
     console.log("Error fetching friend requests of the user", error);
@@ -237,6 +246,10 @@ const acceptFriendRequest = async (userID: string, recepientID: string) => {
     // Convert strings to ObjectId
     const senderId = new mongoose.Types.ObjectId(userID);
     const recepientId = new mongoose.Types.ObjectId(recepientID);
+
+    if (!mongoose.Types.ObjectId.isValid(senderId) || !mongoose.Types.ObjectId.isValid(recepientId)) {
+      throw new Error("Invalid sender or recipient ID.");
+    }
 
     // Query sender and recipient documents
     const sender = await User.findById(senderId);
@@ -402,6 +415,22 @@ const createNotification = async (recipientID: string, message: string, type: st
   }
 };
 
+// function for sending the recepient notification
+// Function to create and save notifications
+const createNotificationn = async (recipientID: string, message: string, type: string, postId: string) => {
+  try {
+    const notification: NotificationInterface = new Notification({
+      message: message,
+      type: type,
+      userId: recipientID,
+    });
+    await notification.save();
+  } catch (error) {
+    console.error('Error creating notification:', error);
+    throw new Error('Error creating notification');
+  }
+};
+
 // function for sending mail to the user containing the otp to verify the user
 const sendMail = async (email: string, otp: string) => {
   try {
@@ -464,6 +493,7 @@ export {
   fetchUserPosts,
   createNotification,
   sendMail,
+  createNotificationn
 };
 
 // Intel

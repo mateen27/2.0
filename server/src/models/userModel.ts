@@ -31,7 +31,7 @@ const userModelSchema: Schema = new Schema({
   email: {
     type: String,
     required: true,
-    // unique: true
+    unique: true
   },
   password: {
     type: String,
@@ -40,7 +40,7 @@ const userModelSchema: Schema = new Schema({
   mobile: {
     type: String,
     required: true,
-    // unique: true
+    unique: true
   },
   image: {
     type: String,

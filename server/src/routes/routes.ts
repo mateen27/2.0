@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { acceptFriendRequestHandler, commentPostHandler, createRoomHandler, deleteCommentPostHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchPostsHandler, fetchUserByID, getAllMoviesHandler, getBollywoodMoviesHandler, getNowPlayingMoviesHandler, getPopularMoviesHandler, getTamilMoviesHandler, getTelguMoviesHandler, getTopRatedMoviesHandler, getUpcomingMoviesHandler, joinRoomHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
+import { acceptFriendRequestHandler, commentPostHandler, createRoomHandler, deleteCommentPostHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchPostsHandler, fetchUserByID, getAllMoviesHandler, getBollywoodMoviesHandler, getNowPlayingMoviesHandler, getPopularMoviesHandler, getTamilMoviesHandler, getTelguMoviesHandler, getTopRatedMoviesHandler, getUpcomingMoviesHandler, joinRoomHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, searchUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
 import sendAndSaveOTP from '../middlewares/sendAndSaveOTP'
 import verifyOTP from '../middlewares/verifyOTP';
 
@@ -47,6 +47,8 @@ router.post('/comment-posts/:userID', commentPostHandler);                      
 // router.delete('/comment-posts', deleteCommentPostHandler);
 // endpoint for finding user by its ID
 router.get('/userByID/:userID', fetchUserByID);
+// endpoint for searching the user
+router.post('/search', searchUserHandler);
 
 // endpoint for creating a room 
 router.post('/create-rooms/:userID', createRoomHandler);

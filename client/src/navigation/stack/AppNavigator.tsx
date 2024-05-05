@@ -28,6 +28,7 @@ import VerificationCode from "../../screens/AppScreens/VerificationCode";
 import { Ionicons } from "@expo/vector-icons";
 import ParentComponent from "../bottom/Parent";
 import Home from "../../screens/SocialMedia/Home";
+import People from "../../screens/SocialMedia/People";
 
 // stackNavigator
 const Stack = createNativeStackNavigator();
@@ -41,7 +42,7 @@ const AppNavigator: React.FC<{}> = () => {
 
   return (
     <Stack.Navigator>
-      {/* <Stack.Screen
+      <Stack.Screen
         name="Splash"
         component={SplashScreen}
         options={{ headerShown: false }}
@@ -71,7 +72,7 @@ const AppNavigator: React.FC<{}> = () => {
         name="Home"
         component={HomeScreen}
         options={{ headerShown: false }}
-      /> */}
+      />
       <Stack.Screen
         name="Parent"
         component={ParentComponent}
@@ -192,6 +193,14 @@ const AppNavigator: React.FC<{}> = () => {
         name="HomeSocial"
         component={Home}
         options={{ headerShown: false }}
+      />
+
+      <Stack.Screen
+        name="People"
+        component={People}
+        options={{ headerShown: true, headerTitle: "My Network", headerStyle: {
+          backgroundColor: "#000000",
+        }, headerTintColor: '#ffffff' }}
       />
     </Stack.Navigator>
   );
