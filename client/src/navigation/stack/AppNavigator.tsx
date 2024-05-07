@@ -29,6 +29,8 @@ import { Ionicons } from "@expo/vector-icons";
 import ParentComponent from "../bottom/Parent";
 import Home from "../../screens/SocialMedia/Home";
 import People from "../../screens/SocialMedia/People";
+import Room from "../../screens/AppScreens/Room";
+import UsersRoomNavigation from "../../screens/AppScreens/UsersRoomNavigation";
 
 // stackNavigator
 const Stack = createNativeStackNavigator();
@@ -202,6 +204,16 @@ const AppNavigator: React.FC<{}> = () => {
           backgroundColor: "#000000",
         }, headerTintColor: '#ffffff' }}
       />
+ 
+      <Stack.Screen
+        name="Room"
+        component={Room}
+        options={{ headerShown: true, headerTitle: "Room", headerStyle: {
+          backgroundColor: "#000000",
+        }, headerTintColor: '#ffffff' }}
+      />
+
+      <Stack.Screen name="UserNavigation" component={UsersRoomNavigation} options={{ headerShown: false }}/>
     </Stack.Navigator>
   );
 };

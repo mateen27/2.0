@@ -42,7 +42,7 @@ const WelcomeRoomScreen = ( { navigation , routes } :any) => {
 
                 <Button
                     title = "Create Room"
-                    onPress = {() => navigation.navigate("CreateRoom")}
+                    onPress = {() => navigation.navigate("Room")}
                     style = {{
                         marginTop : 22 , 
                         width : '100%'
