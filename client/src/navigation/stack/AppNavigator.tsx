@@ -213,7 +213,9 @@ const AppNavigator: React.FC<{}> = () => {
         }, headerTintColor: '#ffffff' }}
       />
 
-      <Stack.Screen name="UserNavigation" component={UsersRoomNavigation} options={{ headerShown: false }}/>
+      <Stack.Screen name="UserNavigation" component={UsersRoomNavigation} options={{ headerShown: true, headerTitle: "Room", headerTintColor: '#ffffff', headerStyle: {
+          backgroundColor: "#000000",
+        }, }}/>
     </Stack.Navigator>
   );
 };

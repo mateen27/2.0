@@ -4,16 +4,53 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MovieRoom from './MovieRoom';
 import RoomUserDetails from './RoomUserDetails';
 import ShareRoom from './ShareRoom';
+// import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-const UsersRoomNavigation = () => {
+const UsersRoomNavigation = ({route}: any) => {
 
-    const Tab = createBottomTabNavigator();
+    // console.log('users', route.params);
+
+    const { roomID, selectedMovies } = route.params
+    // console.log('roomID', selectedMovies);
+    
+    
+
+    // const Tab = createBottomTabNavigator();
+    const Tab = createMaterialTopTabNavigator();
 
   return (
       <Tab.Navigator>
-        <Tab.Screen name="MovieRoom" component={MovieRoom} />
-        <Tab.Screen name="RoomUsers" component={RoomUserDetails} />
-        <Tab.Screen name="ShareRoom" component={ShareRoom} />
+        <Tab.Screen name="Streaming" initialParams={{ roomID, selectedMovies }} component={MovieRoom} options={{
+            tabBarStyle: {
+                backgroundColor: '#000'
+            },
+            tabBarActiveTintColor: '#f1f1f1',
+            headerLeft: () => (
+              <Ionicons
+                name="arrow-back"
+                size={26}
+                color="white"
+                style={{ padding: 10 }}
+                onPress={() => {
+                  // Handle navigation or any other action
+                  navigation.goBack();
+                }}
+              />
+            ),
+        }}/>
+        <Tab.Screen name="Users" component={RoomUserDetails} options={{
+            tabBarStyle: {
+                backgroundColor: '#000'
+            },
+            tabBarActiveTintColor: '#f1f1f1',
+        }} />
+        <Tab.Screen name="Share Details" initialParams={{ roomID, selectedMovies }} component={ShareRoom} options={{
+            tabBarStyle: {
+                backgroundColor: '#000'
+            },
+            tabBarActiveTintColor: '#f1f1f1'
+        }}/>
       </Tab.Navigator>
   )
 }

@@ -122,9 +122,8 @@ const Room = () => {
       );
 
       if (response.status === 200 || response.status === 201) {
-        console.log(response.data.room.roomID);
         Alert.alert("Room created successfully");
-        navigation.navigate('UserNavigation');
+        navigation.navigate('UserNavigation', {selectedMovies, roomID: response.data.room.roomID});
         // return;
       } else {
         console.log(response.data);
