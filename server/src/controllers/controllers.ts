@@ -870,23 +870,24 @@ const createRoomHandler = async (req: Request, res: Response) => {
 
 
 // endpoint for joining the room
-const joinRoomHandler = async ( req: Request, res: Response ) => {
+const joinRoomHandler = async (req: Request, res: Response) => {
   try {
     const { userID } = req.params;
     const { roomID } = req.body;
 
     // Find the room by ID
-    const room = await RoomModel.findOne({ roomID });
+    const room = await RoomModel.findOne({ roomID: roomID });
     if (!room) {
       return res.status(404).json({ error: 'Room not found' });
     }
 
-    // convert the string userID to mongooseObjectID
+    // Convert the string userID to mongoose.Types.ObjectId
     const userId = new mongoose.Types.ObjectId(userID);
     // Check if the user is already in the room
-    if (room.users.includes(userId)) {
-      return res.status(400).json({ error: 'User already in the room' });
-    }
+    const userInRoom = room.users.some(user => user.equals(userId));
+    // if (userInRoom) {
+    //   return res.status(400).json({ error: 'User already in the room' });
+    // }
 
     // Add the user to the room
     room.users.push(userId);
@@ -899,6 +900,7 @@ const joinRoomHandler = async ( req: Request, res: Response ) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
 
 // endopoint for searching the user
 const searchUserHandler = async ( req:Request, res:Response ) => {

@@ -39,7 +39,7 @@ const io = new SocketIOServer(server);
 
 // socket io logics
 io.on('connection', (socket) => {
-  console.log('A user connected');
+  // console.log('A user connected');
 
   socket.on('pause', () => {
     io.emit('pause');
@@ -50,7 +50,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    console.log('A user disconnected');
+    // console.log('A user disconnected');
+    io.emit('disconnected')
   });
 });
 

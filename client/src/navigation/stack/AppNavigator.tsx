@@ -31,6 +31,8 @@ import Home from "../../screens/SocialMedia/Home";
 import People from "../../screens/SocialMedia/People";
 import Room from "../../screens/AppScreens/Room";
 import UsersRoomNavigation from "../../screens/AppScreens/UsersRoomNavigation";
+import RoomNavigation from "../../screens/AppScreens/RoomNavigation";
+import MovieRoom from "../../screens/AppScreens/MovieRoom";
 
 // stackNavigator
 const Stack = createNativeStackNavigator();
@@ -213,9 +215,31 @@ const AppNavigator: React.FC<{}> = () => {
         }, headerTintColor: '#ffffff' }}
       />
 
-      <Stack.Screen name="UserNavigation" component={UsersRoomNavigation} options={{ headerShown: true, headerTitle: "Room", headerTintColor: '#ffffff', headerStyle: {
-          backgroundColor: "#000000",
-        }, }}/>
+<Stack.Screen
+  name="UserNavigation"
+  component={RoomNavigation}
+  options={{
+    headerShown: true,
+    headerTitle: "Room",
+    headerTintColor: '#ffffff',
+    headerStyle: {
+      backgroundColor: "#000000",
+    },
+  }}
+/>
+
+<Stack.Screen
+  name="Streaming"
+  component={MovieRoom}
+  options={{
+    headerShown: true,
+    headerTitle: "Room",
+    headerTintColor: '#ffffff',
+    headerStyle: {
+      backgroundColor: "#000000",
+    },
+  }}
+/>
     </Stack.Navigator>
   );
 };

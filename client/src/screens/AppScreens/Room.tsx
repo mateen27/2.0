@@ -29,6 +29,7 @@ const Room = () => {
   const [label, setLabel] = useState(null);
   const [link, setLink] = useState(null);
   const [userID, setUserID] = useState(null);
+  const [ roomID, setRoomID ] = useState(null);
   const searchRef = useRef();
 
   const onSearch = (search: any) => {
@@ -43,6 +44,8 @@ const Room = () => {
       setData(movies);
     }
   };
+
+  const navigation = useNavigation();
 
   // function to fetch the userID
   const fetchUserID = async () => {
@@ -83,7 +86,7 @@ const Room = () => {
   }, []);
 
   const handleMovieSelection = (item: any) => {
-    // console.log('item', item.movieLink);
+    console.log('item', item.movieLink);
 
     setValue(item.value); // Assuming 'value' is used for ID
     setLabel(item.label); // Movie name
@@ -136,8 +139,44 @@ const Room = () => {
     }
   };
 
-  const navigation = useNavigation();
+  const joinRoomHandler = async (roomID: string) => {
+    try {
 
+        if (!roomID) {
+            Alert.alert("Please enter a Room ID");
+            return;
+          }
+
+          const postData = {
+            roomID, // Include the roomID in the request body
+          };
+
+          console.log('rroom ID inside of the Room Component', roomID);
+
+        const response = await axios.post(`http://192.168.29.181:3001/api/user/join-rooms/${userID}`,postData)
+
+        console.log('response inside the ROoM in joining ', response.data.movieDetails);
+        
+
+        // console.log('respnse', response);
+        if ( response.status === 200 ) {
+            navigation.navigate('Streaming', { roomDetails: response.data.movieDetails});
+        //     // return;
+        } else {
+            console.log(response);
+            Alert.alert("Error joining the room");
+            return;
+          }
+        
+    } catch (error) {
+        console.log('error joining the room', error);
+        throw new Error("Error joining the room");
+    }
+  }
+
+
+  console.log('rooomID', roomID);
+  
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }}>
       <View
@@ -286,6 +325,8 @@ const Room = () => {
           Enter the Room ID to JOIN
         </Text>
         <TextInput
+            value={roomID}
+            onChangeText={(text) => setRoomID(text)}
           placeholder="Enter Room ID"
           placeholderTextColor={"#f2f2f2"}
           style={{
@@ -305,7 +346,7 @@ const Room = () => {
           }}
         />
         <TouchableOpacity
-          onPress={() => createRoomHandler()}
+          onPress={() => joinRoomHandler(roomID)}
           style={{ alignItems: "center" }}
         >
           <Text

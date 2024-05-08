@@ -6,12 +6,13 @@ import RoomUserDetails from './RoomUserDetails';
 import ShareRoom from './ShareRoom';
 // import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import MovieScreen from './MovieScreen';
 
-const UsersRoomNavigation = ({route}: any) => {
+const UsersRoomNavigation = (route: any) => {
 
-    // console.log('users', route.params);
+    console.log('users', route);
 
-    const { roomID, selectedMovies } = route.params
+    const { roomID, selectedMovies } = route
     // console.log('roomID', selectedMovies);
     
     
@@ -20,8 +21,8 @@ const UsersRoomNavigation = ({route}: any) => {
     const Tab = createMaterialTopTabNavigator();
 
   return (
-      <Tab.Navigator>
-        <Tab.Screen name="Streaming" initialParams={{ roomID, selectedMovies }} component={MovieRoom} options={{
+      <Tab.Navigator initialRouteName='Streaming'>
+        <Tab.Screen name="Streaming" initialParams={{roomID, selectedMovies}}  component={MovieScreen} options={{
             tabBarStyle: {
                 backgroundColor: '#000'
             },
@@ -45,7 +46,7 @@ const UsersRoomNavigation = ({route}: any) => {
             },
             tabBarActiveTintColor: '#f1f1f1',
         }} />
-        <Tab.Screen name="Share Details" initialParams={{ roomID, selectedMovies }} component={ShareRoom} options={{
+        <Tab.Screen name="Share Details" initialParams={{roomID, selectedMovies}} component={ShareRoom} options={{
             tabBarStyle: {
                 backgroundColor: '#000'
             },
