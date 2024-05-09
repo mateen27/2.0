@@ -40,7 +40,7 @@ const io = new SocketIOServer(server);
 
 // Handle WebSocket connections
 io.on('connection', (socket) => {
-  console.log('A user connected');
+  // console.log('A user connected');
 
   // Listen for pause and resume events from the host
   socket.on('pauseVideo', () => {

@@ -103,7 +103,7 @@ const User = () => {
         row: {
             flexDirection: 'row',
             alignItems: 'center',
-            marginVertical: 5, // Adjust this value to reduce the vertical gap
+            marginVertical: 2, // Adjust this value to reduce the vertical gap
         },
         profileImage: {
             backgroundColor: 'white',
@@ -111,14 +111,14 @@ const User = () => {
             height: 80,
             borderRadius: 40,
             margin: 20, // Adjust this value to reduce the gap between the profile image and stats
-            marginRight: 25,
-            marginLeft: 25
+            marginRight: 10,
+            marginLeft: 15
         },
         stats: {
             alignItems: 'center',
             // justifyContent: 'space-between',
-            marginRight: 20, // Adjust this value to reduce the gap between each stats
-            marginLeft: 25
+            marginRight: 10, // Adjust this value to reduce the gap between each stats
+            marginLeft: 18
         },
         statText: {
             color: 'white',

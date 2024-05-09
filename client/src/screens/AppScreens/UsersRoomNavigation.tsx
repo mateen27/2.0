@@ -40,7 +40,7 @@ const UsersRoomNavigation = (route: any) => {
               />
             ),
         }}/>
-        <Tab.Screen name="Users" component={RoomUserDetails} options={{
+        <Tab.Screen name="Users" initialParams={{roomID}} component={RoomUserDetails} options={{
             tabBarStyle: {
                 backgroundColor: '#000'
             },

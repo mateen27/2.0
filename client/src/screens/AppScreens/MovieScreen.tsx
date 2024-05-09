@@ -55,7 +55,7 @@ const MovieScreen = ({ route }: any) => {
 
   useEffect(() => {
     fetchUserID();
-    setUserID(roomId)
+    // setUserID(roomId)
   }, []);
 
   // Fetch room details when the screen is focused
@@ -93,7 +93,7 @@ const MovieScreen = ({ route }: any) => {
   );
 
 
-  const socket = socketIOClient('http://your-server-ip:3001');
+  const socket = socketIOClient('http://192.168.29.181:3001');
 
   // Pause the video
   const pauseVideo = () => {
@@ -138,10 +138,21 @@ const MovieScreen = ({ route }: any) => {
             shouldPlay={!isPaused}
           />
 
-          {/* <View style={styles.buttonContainer}> */}
-          {/* <Button title="Pause Video" onPress={pauseVideo} disabled={isPaused} />
-        <Button title="Resume Video" onPress={resumeVideo} disabled={!isPaused} /> */}
-          {/* </View> */}
+          
+      {host && (
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Pause Video"
+            onPress={pauseVideo}
+            disabled={isPaused}
+          />
+          <Button
+            title="Resume Video"
+            onPress={resumeVideo}
+            disabled={!isPaused}
+          />
+        </View>
+      )}
         </>
       ) : (
         <Text
@@ -166,21 +177,6 @@ const MovieScreen = ({ route }: any) => {
       >
         {moviename}
       </Text>
-
-      {host && (
-        <View style={styles.buttonContainer}>
-          <Button
-            title="Pause Video"
-            onPress={pauseVideo}
-            disabled={isPaused}
-          />
-          <Button
-            title="Resume Video"
-            onPress={resumeVideo}
-            disabled={!isPaused}
-          />
-        </View>
-      )}
     </View>
   );
 };
