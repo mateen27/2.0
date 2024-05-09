@@ -1,146 +1,205 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, Dimensions } from "react-native";
+import React, { useEffect, useState } from "react";
 import { Video, ResizeMode } from "expo-av";
-import io from 'socket.io-client';
-import { Button } from 'react-native';
-
+import axios from "axios";
+import { useFocusEffect } from "@react-navigation/native";
+import { Button } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { secretKey } from "../../private/secret";
+import JWT from "expo-jwt";
+import socketIOClient from "socket.io-client";
 
 interface Movie {
-    link: string;
-    name: string;
-  }
+  link: string;
+  name: string;
+}
+
+interface VideoStatus {
+  positionMillis: number;
+  // Other video status properties as needed
+}
+
+const { width, height } = Dimensions.get("window");
+
+const MovieScreen = ({ route }: any) => {
   
-  interface VideoStatus {
-    positionMillis: number;
-    // Other video status properties as needed
-  }
-
-const MovieScreen = ({route}: any) => {
-
-//   console.log('inside of the MovieScreen', route.params);
+  const { roomID } = route.params;
   
 
-const video = React.useRef<Video | null>(null);
-  const [playbackPosition, setPlaybackPosition] = useState(0);
+  // state 
+  const [movielink, setMovieLink] = useState("");
+  const [moviename, setMovieName] = useState("");
+  const [movieiD, setMovieID] = useState("");
+  const [userId, setUserID] = useState("");
+  const [host, setIsHost] = useState(false);
+  const [ roomId, setRoomId ] = useState(null);
+
+  // movie player controller
+  const video = React.useRef(null);
+  const [status, setStatus] = React.useState({});
   const [isPaused, setIsPaused] = useState(false);
-  const [isHost, setIsHost] = useState(false);
-  const [roomID, setRoomID] = useState('');
-  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-  const [movieName, setMovieName] = useState('');
 
-  // Accessing the room ID and the selected Movies by the user
-  if (route.params) {
-    // console.log('rrrr', route.params)
+  const fetchUserID = async () => {
+    try {
+      const userID: any = await AsyncStorage.getItem("userID");
+      // decoding the userID
+      const decodedID: any = JWT.decode(userID, secretKey);
+      console.log("decodedID of the user", decodedID.userID);
 
-    const { link, id, name } = route.params.selectedMovies
-    
-    setIsHost(true);
-    setRoomID(route.params.roomID);
-    setSelectedMovie(route.params.selectedMovies.link);
-    setMovieName(route.params.selectedMovies.name);
-  }
-
-  // Connect to the Socket.IO server
-  const socket = io('http://192.168.29.181:3001/');
-
-  useEffect(() => {
-    socket.on('pause', (position: number) => {
-      setIsPaused(true);
-      setPlaybackPosition(position);
-    });
-
-    socket.on('resume', (position: number) => {
-      setIsPaused(false);
-      setPlaybackPosition(position);
-    });
-
-    return () => {
-      socket.off('pause');
-      socket.off('resume');
-    };
-  }, []);
-
-  const updatePlaybackPosition = async (): Promise<void> => {
-    if (video.current) {
-      try {
-        const currentStatus = await video.current.getStatusAsync();
-        setPlaybackPosition(currentStatus.positionMillis); // Update only playbackPosition
-      } catch (error) {
-        console.error('Error getting video status:', error);
-      }
+      // setting the user ID to the state
+      setUserID(decodedID.userID);
+    } catch (error) {
+      console.log("error fetching the UserID from the Async Storage", error);
     }
   };
 
+  useEffect(() => {
+    fetchUserID();
+    setUserID(roomId)
+  }, []);
+
+  // Fetch room details when the screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+        // Function to fetch room details from the server
+  const fetchRoomDetails = async () => {
+    try {
+      const response = await axios.get(
+        `http://192.168.29.181:3001/api/user/get-room-details/${roomID}`
+      );
+
+      console.log("log inside the movie screen", response.data);
+
+      const { movieLink, movieName, movieID } = response.data.movieDetails[0];
+
+      // accessing the userID of the in room host
+      const { _id } = response.data.userIds;
+      // console.log('log of the hostID', _id)
+      // console.log('isEqual to the hostID', userId === _id);
+
+      if (userId === _id) {
+        setIsHost(true);
+      }
+
+      setMovieLink(movieLink);
+      setMovieName(movieName);
+      setMovieID(movieID);
+    } catch (error) {
+      console.log("error fetching the room Details", error);
+    }
+  };
+      fetchRoomDetails();
+    }, [roomID])
+  );
+
+
+  const socket = socketIOClient('http://your-server-ip:3001');
+
+  // Pause the video
   const pauseVideo = () => {
-    console.log('playback position', playbackPosition);
-    socket.emit('pause', playbackPosition);
-    setIsPaused(true);
+    socket.emit('pauseVideo');
   };
 
+  // Resume the video
   const resumeVideo = () => {
-    socket.emit('resume', playbackPosition);
-    setIsPaused(false);
+    socket.emit('resumeVideo');
   };
 
-  const HostControls = React.memo(() => (
-    <View>
-      <Button title="Pause Video" onPress={pauseVideo} disabled={isPaused} />
-      <Button title="Resume Video" onPress={resumeVideo} disabled={!isPaused} />
-    </View>
-  ));
-  
+  useEffect(() => {
+    // Listen for messages from the server to pause or resume the video
+    socket.on('pauseVideo', () => {
+      setIsPaused(true);
+    });
+
+    socket.on('resumeVideo', () => {
+      setIsPaused(false);
+    });
+
+    return () => {
+      // Clean up event listeners when component unmounts
+      socket.disconnect();
+    };
+  }, []);
+
+
 
   return (
-    <View style = {{ flex: 1 , backgroundColor: '#000' }}>
-      {isHost ? (
-      <View>
-      <Video
-          ref={video}
-          style={styles.video}
-          source={{
-            uri: selectedMovie.link,
-          }}
-          useNativeControls //for the controllers which are coming below
-          // resizeMode="contain"
-          resizeMode={ResizeMode.CONTAIN}
-          isLooping
-          volume={1.0}
-          // width = {300}
-          // showPoster = {true}
-          // controls={true}
-        //   onPlaybackStatusUpdate={(status) => setStatus(() => status)}
-          onPlaybackStatusUpdate={updatePlaybackPosition}
-          shouldPlay={!isPaused}
-          
-        />
+    <View style={{ flex: 1, backgroundColor: "#000" }}>
+      {movielink ? (
+        <>
+          <Video
+            ref={video}
+            source={{ uri: movielink }}
+            useNativeControls
+            resizeMode={ResizeMode.CONTAIN}
+            isLooping
+            style={styles.video}
+            onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+            shouldPlay={!isPaused}
+          />
 
-        <View style={styles.hostControls}>
-          <Button title="Pause Video" onPress={pauseVideo} disabled={isPaused} />
-          <Button title="Resume Video" onPress={resumeVideo} disabled={!isPaused} />
-        </View>
-        </View>
+          {/* <View style={styles.buttonContainer}> */}
+          {/* <Button title="Pause Video" onPress={pauseVideo} disabled={isPaused} />
+        <Button title="Resume Video" onPress={resumeVideo} disabled={!isPaused} /> */}
+          {/* </View> */}
+        </>
       ) : (
-        <View style={styles.userControls}>
-          {/* Render controls for users who are not the host */}
+        <Text
+          style={{
+            color: "#fff",
+            marginTop: 20,
+            fontSize: 22,
+            fontWeight: "600",
+          }}
+        >
+          Loading...
+        </Text>
+      )}
+      <Text
+        style={{
+          color: "#fff",
+          marginTop: 50,
+          fontWeight: "600",
+          fontSize: 22,
+          textAlign: "center",
+        }}
+      >
+        {moviename}
+      </Text>
+
+      {host && (
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Pause Video"
+            onPress={pauseVideo}
+            disabled={isPaused}
+          />
+          <Button
+            title="Resume Video"
+            onPress={resumeVideo}
+            disabled={!isPaused}
+          />
         </View>
       )}
-
-        <Text style = {{ color: '#f2f2f2', fontSize: 22 , fontWeight: '600', textAlign : 'center', marginTop : 20 }}>{ selectedMovies.name }</Text>
     </View>
-  )
-}
+  );
+};
 
-export default MovieScreen
+export default MovieScreen;
 
 const styles = StyleSheet.create({
   video: {
-    alignSelf: "center",
+    // alignSelf: "center",
     width: "100%",
-    height: 300,
+    height: "41%",
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     marginTop: 20,
   },
-})
+});
+
+// fetch the current user ID from he Async Storqage and then check it from the room Host User ID
+// if yes then set the currentUser as the Host and make the button visible
+// else dont set the currentUser as the Host and dont make the button visible

@@ -876,7 +876,7 @@ const joinRoomHandler = async (req: Request, res: Response) => {
     const { roomID } = req.body;
 
     // Find the room by ID
-    const room = await RoomModel.findOne({ roomID: roomID });
+    const room = await RoomModel.findOne({ roomID });
     if (!room) {
       return res.status(404).json({ error: 'Room not found' });
     }
@@ -924,6 +924,44 @@ const searchUserHandler = async ( req:Request, res:Response ) => {
   }
 }
 
+// endpoint for fetching the room information
+const fetchRoomDetailsHandler = async (req: Request, res: Response) => {
+  try {
+      // Extract the roomId from the request parameters
+      const { roomID } = req.params;
+
+      // Find the room in the database by roomId
+      const room: Room | null = await RoomModel.findOne({ roomID })
+          .populate('hostUserId', 'id name email') // Populate the hostUserId field to get the host details
+          .populate('users', 'id name') // Populate the users field to get the user IDs
+          .populate('movieDetails')
+          .lean();
+
+      if (!room) {
+          return res.status(404).json({ message: 'Room not found' });
+      }
+
+      // Get the number of users in the room
+      const numberOfUsers: number = room.users.length;
+
+      // Extract relevant information from the room
+      const roomDetails = {
+          roomID: room.roomID,
+          host: room.users,
+          numberOfUsers: numberOfUsers,
+          userIds: room.hostUserId, // Include the user IDs
+          movieDetails: room.movieDetails
+      };
+
+      // Send the room details as a response
+      res.status(200).json(roomDetails);
+  } catch (error) {
+      console.log('error fetching the room information', error);
+      res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+
 export {
   loginUserHandler,
   registerUserHandler,
@@ -956,5 +994,6 @@ export {
   fetchUserByID,
   createRoomHandler,
   joinRoomHandler,
-  searchUserHandler
+  searchUserHandler,
+  fetchRoomDetailsHandler
 };

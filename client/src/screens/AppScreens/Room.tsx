@@ -126,7 +126,8 @@ const Room = () => {
 
       if (response.status === 200 || response.status === 201) {
         Alert.alert("Room created successfully");
-        navigation.navigate('UserNavigation', {selectedMovies, roomID: response.data.room.roomID});
+        navigation.navigate('UserNavigation', {roomID: response.data.room.roomID});
+        setRoomID(null);
         // return;
       } else {
         console.log(response.data);
@@ -141,41 +142,41 @@ const Room = () => {
 
   const joinRoomHandler = async (roomID: string) => {
     try {
-
-        if (!roomID) {
-            Alert.alert("Please enter a Room ID");
-            return;
-          }
-
-          const postData = {
-            roomID, // Include the roomID in the request body
-          };
-
-          console.log('rroom ID inside of the Room Component', roomID);
-
-        const response = await axios.post(`http://192.168.29.181:3001/api/user/join-rooms/${userID}`,postData)
-
-        console.log('response inside the ROoM in joining ', response.data.movieDetails);
+      if (!roomID) {
+        Alert.alert("Please enter a Room ID");
+        return;
+      }
+  
+      const postData = {
+        roomID,
+      };
+  
+      console.log('room ID inside of the Room Component', roomID);
+  
+      const response = await axios.post(`http://192.168.29.181:3001/api/user/join-rooms/${userID}`, postData);
+  
+      console.log('response inside the Room in joining', response.data);
+  
+      if (response.data && response.data.movieDetails) {
+        console.log('response movie details', response.data.movieDetails);
+        console.log('room ID above navigation', roomID);
         
+        navigation.navigate('UserNavigation', { roomID });
 
-        // console.log('respnse', response);
-        if ( response.status === 200 ) {
-            navigation.navigate('Streaming', { roomDetails: response.data.movieDetails});
-        //     // return;
-        } else {
-            console.log(response);
-            Alert.alert("Error joining the room");
-            return;
-          }
-        
+        setRoomID(null);
+      } else {
+        console.log(response);
+        Alert.alert("Error joining the room");
+      }
     } catch (error) {
-        console.log('error joining the room', error);
-        throw new Error("Error joining the room");
+      console.log('error joining the room', error);
+      Alert.alert("Error joining the room");
     }
   }
+  
 
 
-  console.log('rooomID', roomID);
+  // console.log('rooomID', roomID);
   
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }}>

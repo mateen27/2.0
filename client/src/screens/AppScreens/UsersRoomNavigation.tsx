@@ -22,7 +22,7 @@ const UsersRoomNavigation = (route: any) => {
 
   return (
       <Tab.Navigator initialRouteName='Streaming'>
-        <Tab.Screen name="Streaming" initialParams={{roomID, selectedMovies}}  component={MovieScreen} options={{
+        <Tab.Screen name="Streaming" initialParams={{roomID}}  component={MovieScreen} options={{
             tabBarStyle: {
                 backgroundColor: '#000'
             },
@@ -46,7 +46,7 @@ const UsersRoomNavigation = (route: any) => {
             },
             tabBarActiveTintColor: '#f1f1f1',
         }} />
-        <Tab.Screen name="Share Details" initialParams={{roomID, selectedMovies}} component={ShareRoom} options={{
+        <Tab.Screen name="Share Details" initialParams={{roomID}} component={ShareRoom} options={{
             tabBarStyle: {
                 backgroundColor: '#000'
             },

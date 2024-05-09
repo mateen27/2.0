@@ -40,14 +40,20 @@ const MovieRoom = ({route}: any) => {
     };
   }, []);
 
-  const updatePlaybackPosition = async () => {
+  const updatePlaybackPosition = async (): Promise<void> => {
     if (video.current) {
-      const status = await video.current.getStatusAsync();
-      setPlaybackPosition(status.positionMillis);
+      try {
+        const currentStatus = await video.current.getStatusAsync();
+        setStatus(currentStatus);
+        setPlaybackPosition(currentStatus.positionMillis);
+      } catch (error) {
+        console.error('Error getting video status:', error);
+      }
     }
   };
 
   const pauseVideo = () => {
+    console.log('playback position', playbackPosition); // Add semicolon here
     socket.emit('pause', playbackPosition);
     setIsPaused(true);
   };

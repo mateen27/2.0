@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import connectDatabase from './config/database'
+import connectDatabase from './config/database';
 import router from './routes/routes';
 
 // http
@@ -32,32 +32,33 @@ app.use('/api/user', router);
 
 const PORT = process.env.PORT || 3001;
 
-// making the server using http
-const server = http.createServer(app) // app instance of express
-// socket io server
+// Create an HTTP server
+const server = http.createServer(app);
+
+// Create an instance of Socket.IO server and attach it to the HTTP server
 const io = new SocketIOServer(server);
 
-// socket io logics
+// Handle WebSocket connections
 io.on('connection', (socket) => {
-  // console.log('A user connected');
+  console.log('A user connected');
 
-  socket.on('pause', () => {
-    io.emit('pause');
+  // Listen for pause and resume events from the host
+  socket.on('pauseVideo', () => {
+    // Broadcast to all other users except the host to pause the video
+    socket.broadcast.emit('pauseVideo');
   });
 
-  socket.on('resume', () => {
-    io.emit('resume');
+  socket.on('resumeVideo', () => {
+    // Broadcast to all other users except the host to resume the video
+    socket.broadcast.emit('resumeVideo');
   });
 
+  // Handle disconnection
   socket.on('disconnect', () => {
-    // console.log('A user disconnected');
-    io.emit('disconnected')
+    console.log('A user disconnected');
   });
 });
 
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
