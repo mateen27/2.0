@@ -138,21 +138,6 @@ const MovieScreen = ({ route }: any) => {
             shouldPlay={!isPaused}
           />
 
-          
-      {host && (
-        <View style={styles.buttonContainer}>
-          <Button
-            title="Pause Video"
-            onPress={pauseVideo}
-            disabled={isPaused}
-          />
-          <Button
-            title="Resume Video"
-            onPress={resumeVideo}
-            disabled={!isPaused}
-          />
-        </View>
-      )}
         </>
       ) : (
         <Text
@@ -177,6 +162,21 @@ const MovieScreen = ({ route }: any) => {
       >
         {moviename}
       </Text>
+
+      {host && (
+        <View style={styles.buttonContainer}>
+          <Button
+            title="Pause Video"
+            onPress={pauseVideo}
+            disabled={isPaused}
+          />
+          <Button
+            title="Resume Video"
+            onPress={resumeVideo}
+            disabled={!isPaused}
+          />
+        </View>
+      )}
     </View>
   );
 };

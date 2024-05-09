@@ -39,6 +39,7 @@ import {
 import RoomModel, { Movie, MovieModel, Room } from "../models/roomModel";
 // importing uuid for random ID generation
 import { v4 as uuidv4 } from 'uuid';
+import Notification, { NotificationInterface } from "../models/notificationModel";
 
 // logic for signing the user inside of the application
 const loginUserHandler = async (req: Request, res: Response) => {
@@ -961,6 +962,24 @@ const fetchRoomDetailsHandler = async (req: Request, res: Response) => {
   }
 }
 
+// endpoint for fetching the Notifications of the Users 
+const fetchNotificationHandler = async ( req: Request, res: Response ) => {
+  try {
+    // Extract the user ID from the request parameters
+    const { userID } = req.params;
+
+    // Use Mongoose to find notifications by user ID
+    const notifications: NotificationInterface[] = await Notification.find({ userId: userID });
+
+    // Return the fetched notifications as a response
+    res.status(200).json({ notifications });
+} catch (error) {
+    // Handle any errors that occur during the process
+    console.error('Error fetching notifications:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+}
+}
+
 
 export {
   loginUserHandler,
@@ -995,5 +1014,6 @@ export {
   createRoomHandler,
   joinRoomHandler,
   searchUserHandler,
-  fetchRoomDetailsHandler
+  fetchRoomDetailsHandler,
+  fetchNotificationHandler
 };

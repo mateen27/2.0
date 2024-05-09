@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { acceptFriendRequestHandler, commentPostHandler, createRoomHandler, deleteCommentPostHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchPostsHandler, fetchRoomDetailsHandler, fetchUserByID, getAllMoviesHandler, getBollywoodMoviesHandler, getNowPlayingMoviesHandler, getPopularMoviesHandler, getTamilMoviesHandler, getTelguMoviesHandler, getTopRatedMoviesHandler, getUpcomingMoviesHandler, joinRoomHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, searchUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
+import { acceptFriendRequestHandler, commentPostHandler, createRoomHandler, deleteCommentPostHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchNotificationHandler, fetchPostsHandler, fetchRoomDetailsHandler, fetchUserByID, getAllMoviesHandler, getBollywoodMoviesHandler, getNowPlayingMoviesHandler, getPopularMoviesHandler, getTamilMoviesHandler, getTelguMoviesHandler, getTopRatedMoviesHandler, getUpcomingMoviesHandler, joinRoomHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, searchUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
 import sendAndSaveOTP from '../middlewares/sendAndSaveOTP'
 import verifyOTP from '../middlewares/verifyOTP';
 
@@ -56,6 +56,8 @@ router.post('/create-rooms/:userID', createRoomHandler);
 router.post('/join-rooms/:userID', joinRoomHandler);
 // endpoint for fetching the room details
 router.get('/get-room-details/:roomID', fetchRoomDetailsHandler);
+// endpoint for fetching the notification details
+router.get('/get-notification/:userID', fetchNotificationHandler);
 
 // sending movies as responses
 // sending all movies data as responses
