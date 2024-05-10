@@ -65,11 +65,11 @@ const Home: React.FC<{ navigation: any , route: any }> = ({ navigation , route }
   useEffect(() => {
     const fetchUpcomingMovies = async () => {
       try {
-        const nowPlayingMovies = await axios.get('http://192.168.29.181:3001/api/user/all-movies/');
+        const upcomingMovies = await axios.get('http://192.168.29.181:3001/api/user/upcoming-movies/');
         // console.log('now playing movies', nowPlayingMovies)
         setUpcomingMovies([
           { id: "dummy1" },
-          ...nowPlayingMovies.data.results,
+          ...upcomingMovies.data.results,
           { id: "dummy2" },
         ]);
       } catch (error) {

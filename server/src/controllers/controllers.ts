@@ -41,6 +41,9 @@ import RoomModel, { Movie, MovieModel, Room } from "../models/roomModel";
 import { v4 as uuidv4 } from 'uuid';
 import Notification, { NotificationInterface } from "../models/notificationModel";
 
+import MovieCastDetails from '../data/MovieCast/MovieCastDetails.json';
+//../data/MovieCast/MovieCastDetails
+
 // logic for signing the user inside of the application
 const loginUserHandler = async (req: Request, res: Response) => {
   try {
@@ -980,6 +983,24 @@ const fetchNotificationHandler = async ( req: Request, res: Response ) => {
 }
 }
 
+// endpoint for fethcing the movie cast details
+const fetchMovieCastHandler = ( req: Request, res: Response ) => {
+  try {
+    const movieId = parseInt(req.params.movieId);
+
+  // Find the movie cast details based on the movie ID
+  const castDetails = MovieCastDetails.find((movie: any) => movie.id === movieId);
+
+  if (castDetails) {
+    res.status(200).json(castDetails);
+  } else {
+    res.status(404).json({ message: 'Movie cast details not found' });
+  }
+  } catch (error) {
+    
+  }
+}
+
 
 export {
   loginUserHandler,
@@ -1015,5 +1036,6 @@ export {
   joinRoomHandler,
   searchUserHandler,
   fetchRoomDetailsHandler,
-  fetchNotificationHandler
+  fetchNotificationHandler,
+  fetchMovieCastHandler
 };

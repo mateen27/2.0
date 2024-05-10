@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { acceptFriendRequestHandler, commentPostHandler, createRoomHandler, deleteCommentPostHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchNotificationHandler, fetchPostsHandler, fetchRoomDetailsHandler, fetchUserByID, getAllMoviesHandler, getBollywoodMoviesHandler, getNowPlayingMoviesHandler, getPopularMoviesHandler, getTamilMoviesHandler, getTelguMoviesHandler, getTopRatedMoviesHandler, getUpcomingMoviesHandler, joinRoomHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, searchUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
+import { acceptFriendRequestHandler, commentPostHandler, createRoomHandler, deleteCommentPostHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchMovieCastHandler, fetchNotificationHandler, fetchPostsHandler, fetchRoomDetailsHandler, fetchUserByID, getAllMoviesHandler, getBollywoodMoviesHandler, getNowPlayingMoviesHandler, getPopularMoviesHandler, getTamilMoviesHandler, getTelguMoviesHandler, getTopRatedMoviesHandler, getUpcomingMoviesHandler, joinRoomHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, searchUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
 import sendAndSaveOTP from '../middlewares/sendAndSaveOTP'
 import verifyOTP from '../middlewares/verifyOTP';
 
@@ -51,13 +51,13 @@ router.get('/userByID/:userID', fetchUserByID);
 router.post('/search', searchUserHandler);
 
 // endpoint for creating a room 
-router.post('/create-rooms/:userID', createRoomHandler);
+router.post('/create-rooms/:userID', createRoomHandler);                            // working API
 // endpoint for joining the room 
-router.post('/join-rooms/:userID', joinRoomHandler);
+router.post('/join-rooms/:userID', joinRoomHandler);                                // working API
 // endpoint for fetching the room details
-router.get('/get-room-details/:roomID', fetchRoomDetailsHandler);
+router.get('/get-room-details/:roomID', fetchRoomDetailsHandler);                   // working API
 // endpoint for fetching the notification details
-router.get('/get-notification/:userID', fetchNotificationHandler);
+router.get('/get-notification/:userID', fetchNotificationHandler);                  // working API
 
 // sending movies as responses
 // sending all movies data as responses
@@ -69,6 +69,9 @@ router.get('/tamil-movies', getTamilMoviesHandler);
 router.get('/telgu-movies', getTelguMoviesHandler);
 router.get('/topRated-movies', getTopRatedMoviesHandler);
 router.get('/upcoming-movies', getUpcomingMoviesHandler);
+
+// find by the movie Cast
+router.get('/movie-cast/:movieId', fetchMovieCastHandler);
 
 
 

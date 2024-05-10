@@ -23,10 +23,10 @@ export const movieDetails = (id: number) => {
     return `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`
 }
 
-export const movieCastDetails = (id: number) => {
-    return `
-    https://api.themoviedb.org/3/movie/${id}/credits?api_key=${API_KEY}`
-}
+// export const movieCastDetails = (id: number) => {
+//     return `
+//     https://api.themoviedb.org/3/movie/${id}/credits?api_key=${API_KEY}`
+// }
 
 export const topRatedTVShows: string = `
 https://api.themoviedb.org/3/tv/top_rated?api_key=${API_KEY}`

@@ -7,9 +7,10 @@
       "outDir": "./dist",
       "sourceMap": true,
       "lib": ["es6", "dom"],
+      "resolveJsonModule": true // Enable resolveJsonModule
     },
     "include": [
       "src/**/*.ts"
-, "app.ts", "src/config/smsService.ts"    ]
+, "app.ts", "src/config/smsService.ts", "src/data/MovieCast/MovieCastDetails.json"    ]
   }
   
