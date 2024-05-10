@@ -153,7 +153,7 @@ const LoginScreen = () => {
 
       // making the request to the backend to check if the user exists or not
       const response = await axios.post(
-        "https://two-0-server.onrender.com/api/user/login",
+        "http://192.168.29.181:3001/api/user/login",
         user
       );
 

@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { acceptFriendRequestHandler, commentPostHandler, createRoomHandler, deleteCommentPostHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchMovieCastHandler, fetchNotificationHandler, fetchPostsHandler, fetchRoomDetailsHandler, fetchUserByID, getAllMoviesHandler, getBollywoodMoviesHandler, getNowPlayingMoviesHandler, getPopularMoviesHandler, getTamilMoviesHandler, getTelguMoviesHandler, getTopRatedMoviesHandler, getUpcomingMoviesHandler, joinRoomHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, searchUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
+import { acceptFriendRequestHandler, commentPostHandler, createRoomHandler, deleteCommentPostHandler, deletePostHandler, fetchAllUsersHandler, fetchFollowersHandler, fetchFollowingHandler, fetchMovieCastHandler, fetchMovieDescriptionHandler, fetchNotificationHandler, fetchPostsHandler, fetchRoomDetailsHandler, fetchUserByID, getAllMoviesHandler, getBollywoodMoviesHandler, getNowPlayingMoviesHandler, getPopularMoviesHandler, getTamilMoviesHandler, getTelguMoviesHandler, getTopRatedMoviesHandler, getUpcomingMoviesHandler, joinRoomHandler, likePostsHandler, loginUserHandler, postHandler, registerUserHandler, searchUserHandler, sendFriendRequestHandler, updatePostDescriptionHandler, uploadPostHandler, userPostHandler, verifiedUser, viewFollowersHandler, viewFollowingsHandler, viewFriendRequestHandler } from '../controllers/controllers';
 import sendAndSaveOTP from '../middlewares/sendAndSaveOTP'
 import verifyOTP from '../middlewares/verifyOTP';
 
@@ -72,6 +72,8 @@ router.get('/upcoming-movies', getUpcomingMoviesHandler);
 
 // find by the movie Cast
 router.get('/movie-cast/:movieId', fetchMovieCastHandler);
+// find the movie Description
+router.get('/movie-description/:movieId', fetchMovieDescriptionHandler);
 
 
 

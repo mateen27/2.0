@@ -29,7 +29,7 @@ import AllMovies from '../../data/AllMovies.json'
 const getMovieDetails = async (movieid: number) => {
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieid}?api_key=${API_KEY}`
+      `http://192.168.29.181:3001/api/user/movie-description/${movieid}`
     );
     const data = await response.json();
     return data;
@@ -41,7 +41,7 @@ const getMovieDetails = async (movieid: number) => {
 const getMovieCastDetails = async (movieid: number) => {
   try {
     const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieid}/credits?api_key=${API_KEY}`
+      `http://192.168.29.181:3001/api/user/movie-cast/${movieid}`
     );
     const data = await response.json();
     return data;

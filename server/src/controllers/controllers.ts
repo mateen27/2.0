@@ -26,23 +26,35 @@ import mongoose, { FilterQuery } from "mongoose";
 import Post, { PostInterface } from "../models/postModel";
 // movies data
 import * as fs from "fs";
-import {
-  ALL_MOVIES,
-  BollywoodMovies,
-  NowPlayingMovies,
-  PopularMovies,
-  TamilMovies,
-  TelguMovies,
-  TopRatedMovies,
-  UpcomingMovies,
-} from "../path";
+// ----------------------------------- --------------------------------
+// Movies data from the data folder
+import path from "path";
+
+const ALL_MOVIES = path.resolve(__dirname, './data/AllMovies.json');
+
+const BollywoodMovies = path.resolve(__dirname, './data/BollywoodMovies.json');
+
+const NowPlayingMovies = path.resolve(__dirname, './data/NowPlayingMovies.json');
+
+const PopularMovies = path.resolve(__dirname, './data/PopularMovies.json');
+
+const TamilMovies = path.resolve(__dirname, '../data/TamilMovies.json');
+
+const TelguMovies = path.resolve(__dirname, '../data/TelguMovies.json');
+
+const TopRatedMovies = path.resolve(__dirname, '../data/TopRatedMovies.json');
+
+const UpcomingMovies = path.resolve(__dirname, '../data/UpcomingMovies.json');
+
+// ----------------------------------- --------------------------------
+
 import RoomModel, { Movie, MovieModel, Room } from "../models/roomModel";
 // importing uuid for random ID generation
 import { v4 as uuidv4 } from 'uuid';
 import Notification, { NotificationInterface } from "../models/notificationModel";
 
 import MovieCastDetails from '../data/MovieCast/MovieCastDetails.json';
-//../data/MovieCast/MovieCastDetails
+import MovieDetails from '../data/MovieDetails/MovieDetails.json';
 
 // logic for signing the user inside of the application
 const loginUserHandler = async (req: Request, res: Response) => {
@@ -997,7 +1009,27 @@ const fetchMovieCastHandler = ( req: Request, res: Response ) => {
     res.status(404).json({ message: 'Movie cast details not found' });
   }
   } catch (error) {
-    
+    console.log('error fetching the cast details', error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+// endpoint for fetching the movie details
+const fetchMovieDescriptionHandler = async ( req: Request, res: Response ) => {
+  try {
+    const movieId = parseInt(req.params.movieId);
+
+  // Find the movie cast details based on the movie ID
+  const castDetails = MovieDetails.find((movie: any) => movie.id === movieId);
+
+  if (castDetails) {
+    res.status(200).json(castDetails);
+  } else {
+    res.status(404).json({ message: 'Movie cast details not found' });
+  }
+  } catch (error) {
+    console.log('error finding the movies details ', error);
+    res.status(500).json({ message: 'Movie cast details not found' });
   }
 }
 
@@ -1037,5 +1069,6 @@ export {
   searchUserHandler,
   fetchRoomDetailsHandler,
   fetchNotificationHandler,
-  fetchMovieCastHandler
+  fetchMovieCastHandler,
+  fetchMovieDescriptionHandler
 };

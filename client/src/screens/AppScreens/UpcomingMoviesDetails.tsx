@@ -27,7 +27,7 @@ import {
   const getMovieDetails = async (movieid: number) => {
     try {
       const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${movieid}?api_key=${API_KEY}`
+        `http://192.168.29.181:3001/api/user/movie-description/${movieid}`
       );
       const data = await response.json();
       return data;
@@ -110,8 +110,8 @@ import {
   
     // Lazy Loading
     if (
-      // movieData == undefined &&
-      // movieData == null &&
+      movieData == undefined &&
+      movieData == null &&
       movieCast == undefined &&
       movieCast == null &&
       upcomingMovies == undefined &&
